@@ -46,3 +46,9 @@ main{padding:12px 15px 22px}.voice{min-height:54px;border-radius:24px;font-size:
 #all .all-action-bar button+button{background:linear-gradient(#ffa998,#ef806f)}
 #all .all-empty{padding:25px 10px;text-align:center}
 @media(max-width:370px){#all.page.active{height:calc(100dvh - 169px - 69px - env(safe-area-inset-bottom) - 24px)}#all .date-group-head{font-size:13px}#all .all-entry-title{font-size:13px}}
+
+/* v0.6: clearly separate events and tasks within each date */
+#all .entry-section-label{font-size:12px;font-weight:800;color:#577d32;background:#f3f5e9;border-radius:8px;padding:7px 10px;margin:7px 0 2px}
+#all .entry-section+.entry-section{margin-top:9px}
+#all .entry-section:nth-child(2) .entry-section-label{color:#b46b5f;background:#fff0eb}
+#all .all-entry-time{flex-basis:49px}
