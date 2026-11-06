@@ -59,3 +59,41 @@ main{padding:12px 15px 22px}.voice{min-height:54px;border-radius:24px;font-size:
 .voice-choice-text{background:#f2f4e7;border-radius:12px;padding:12px;overflow-wrap:anywhere}
 #dayDialog .day-dialog-list{max-height:48dvh;overflow:auto}
 @media(max-width:370px){#all.page.active{height:calc(100dvh - 169px - 69px - env(safe-area-inset-bottom) - 24px)}}
+
+/* v0.8 premium visual refinement — CSS only; v0.7 logic untouched */
+:root{color:#303b2f;background:#f7f1e5}
+.app{background:linear-gradient(155deg,#fcf8ef 0%,#f6efdf 100%)}
+.hero{background:radial-gradient(ellipse at 22% 36%,#fffdf7,#f3e9d6 92%);border-bottom:1px solid #e7dfcf}
+.hero:before,.hero:after{opacity:.22}
+.brand h1{color:#496a43}.brand h1 span{color:#d98b7b}
+.brand p{color:#6d795d}
+.datebox{background:#fffdf8ed;border:1px solid #eae2d1;box-shadow:0 5px 16px #706d4d16}
+.voice{border:1px solid #d8e1cc;background:#fffdf8;box-shadow:0 4px 14px #66705214;font-size:16px;min-height:58px}
+.voice b{color:#527951}
+.actions button,#all .all-action-bar button{background:linear-gradient(145deg,#78936c,#527b56);box-shadow:0 4px 11px #4c654b24}
+.actions button+button,#all .all-action-bar button+button{background:linear-gradient(145deg,#e8a394,#d98578);box-shadow:0 4px 11px #b9776b22}
+.actions button{font-size:18px;min-height:60px}
+.panel{background:#fffefa;border:1px solid #eee7d9;box-shadow:0 5px 17px #6d65471a}
+.panel h2{color:#415e45;font-size:clamp(15px,3.9vw,19px)}
+.item{font-size:15px}.item time{font-size:12px;color:#638265}
+.more-link,.go{background:#e9efe4;color:#496c4f}
+.upcoming{background:linear-gradient(130deg,#fffaf5,#faeae5);border-color:#f3dfd9}
+.upcoming h2{color:#94665c}
+.nav{background:#fffdf9fa;border-top-color:#e8e3d9}
+.nav button.selected{background:#eaf0e6;color:#476c4c}
+.filter-btn.selected{background:#628464;border-color:#628464}
+#all .date-group{border-color:#e8e5d9;box-shadow:0 4px 15px #6a665018}
+#all .date-group-head{background:#e9f0e7;color:#486c4b}
+#all .date-group-count{color:#567c59}
+#all .all-entry-time{color:#5b8061}
+#all .all-entry-title{font-size:16px}
+#all .all-entry-edit{background:#ebf0e8;color:#4b7250}
+#all .all-action-bar{background:linear-gradient(#faf6ee,#f7f1e5);border-top-color:#e5ded2}
+.event-type{color:#507858}.task-type{color:#c47a70}
+.day.has{background:#edf3e9}.day.selected{border-color:#6c906d;background:#eaf1e6}
+.day .eventname,.eventname{color:#507a55}
+.day.sun .daynum,.day.holiday .daynum{color:#c86167}
+.day.sat .daynum{color:#507ab6}
+.save,.wide,.day-dialog-actions button{background:#628664}
+.day-dialog-actions button+button{background:#df9083}
+@media(max-width:370px){.actions button{font-size:16px}.item{font-size:13px}#all .all-entry-title{font-size:14px}}
