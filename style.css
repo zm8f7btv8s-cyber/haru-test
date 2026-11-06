@@ -47,8 +47,15 @@ main{padding:12px 15px 22px}.voice{min-height:54px;border-radius:24px;font-size:
 #all .all-empty{padding:25px 10px;text-align:center}
 @media(max-width:370px){#all.page.active{height:calc(100dvh - 169px - 69px - env(safe-area-inset-bottom) - 24px)}#all .date-group-head{font-size:13px}#all .all-entry-title{font-size:13px}}
 
-/* v0.6: clearly separate events and tasks within each date */
-#all .entry-section-label{font-size:12px;font-weight:800;color:#577d32;background:#f3f5e9;border-radius:8px;padding:7px 10px;margin:7px 0 2px}
-#all .entry-section+.entry-section{margin-top:9px}
-#all .entry-section:nth-child(2) .entry-section-label{color:#b46b5f;background:#fff0eb}
-#all .all-entry-time{flex-basis:49px}
+/* v0.7: separate event/task groups; preserve original v0.5 palette */
+#all .group-type,.day-dialog-list .group-type{font-size:12px;font-weight:800;padding:8px 3px 5px;letter-spacing:.02em}
+#all .group-type:not(:first-child){margin-top:6px;border-top:1px solid #f1e9d7}
+.event-type{color:#567d2f}.task-type{color:#d17b6c}
+#all .all-entry.is-task{background:#fff9f6}
+#all .all-entry.is-task .all-entry-check{margin-left:3px}
+#all .all-entry.is-task .all-entry-title{padding-left:2px}
+#all.page.active{height:calc(100dvh - 177px - 69px - env(safe-area-inset-bottom) - 24px);min-height:180px}
+#all .all-action-bar{position:relative;z-index:2}
+.voice-choice-text{background:#f2f4e7;border-radius:12px;padding:12px;overflow-wrap:anywhere}
+#dayDialog .day-dialog-list{max-height:48dvh;overflow:auto}
+@media(max-width:370px){#all.page.active{height:calc(100dvh - 169px - 69px - env(safe-area-inset-bottom) - 24px)}}
