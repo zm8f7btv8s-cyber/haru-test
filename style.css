@@ -24,3 +24,25 @@ main{padding:12px 15px 22px}.voice{min-height:54px;border-radius:24px;font-size:
 .item{display:flex;align-items:center;gap:5px;padding:8px 0;min-width:0}.item time{display:inline-block;flex:0 0 39px;margin:0;font-size:11px;white-space:nowrap}.item-title{display:block;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.edit-mini{border:0;background:transparent;color:#607e3a;flex:0 0 22px;font-size:17px;padding:2px}.taskline input{flex:0 0 16px}.more-link{width:100%;border:0;background:#eff3e5;color:#52792d;border-radius:9px;padding:8px 4px;margin-top:5px;font-size:12px;font-weight:700}.panel{overflow:hidden}.upcoming-row button{border:0;background:none;color:#5c7937}
 .day-dialog{width:min(94vw,440px);max-height:min(76dvh,680px);padding:19px 17px 17px;border-radius:23px 23px 18px 18px}.day-dialog .dialoghead h2{font-size:20px;margin:0}.day-dialog .dialoghead p{margin:5px 0 10px}.day-dialog-list{max-height:49dvh;overflow-y:auto;overscroll-behavior:contain}.day-dialog-item{width:100%;display:flex;align-items:center;text-align:left;gap:9px;background:#fffefa;border:1px solid #efe8d8;border-radius:12px;padding:12px 9px;margin:7px 0;color:#33382b}.day-dialog-time{flex:0 0 67px;font-size:13px;font-weight:700;color:#678a36}.day-dialog-name{flex:1;min-width:0;font-size:15px;overflow-wrap:anywhere}.day-dialog-edit{font-size:12px;color:#7d826d;white-space:nowrap}.day-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.day-dialog-actions button{border:0;border-radius:12px;padding:12px 5px;background:#789b3d;color:white;font-weight:750}.day-dialog-actions button+button{background:#ed8c7a}
 @media(max-width:370px){.hero{height:169px}.mascot{height:132px}.day{height:65px;min-height:65px;max-height:65px}.eventname{font-size:8px}}
+
+/* v0.5: date-grouped all-items page, independent scrolling and pinned add buttons */
+#all.page.active{display:flex;flex-direction:column;height:calc(100dvh - 177px - 69px - env(safe-area-inset-bottom) - 24px);min-height:280px;overflow:hidden}
+#all .all-top{flex:none}#all .all-top h2{font-size:23px;color:#49682b;margin:3px 0 2px}#all .all-top p{margin:0;color:#8a846d;font-size:13px}
+#all .filter{flex:none;margin:14px 0 12px}#all .filter-btn{flex:1;font-weight:750;padding:10px 9px}
+#all .all-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:2px 2px 12px;scrollbar-width:thin}
+#all .date-group{background:#fffdf7;border:1px solid #f1e9d7;border-radius:18px;margin:0 0 12px;overflow:hidden;box-shadow:0 3px 12px #806b4320}
+#all .date-group-head{background:#eef2e0;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 13px;color:#506c2e;font-size:15px;font-weight:800}
+#all .date-group-count{background:#fffdf5;color:#698b42;border-radius:30px;padding:3px 9px;font-size:12px;white-space:nowrap}
+#all .date-group-items{padding:3px 12px}
+#all .all-entry{display:flex;align-items:center;gap:9px;min-height:49px;border-bottom:1px solid #eee8dc}
+#all .all-entry:last-child{border-bottom:0}
+#all .all-entry-time{flex:0 0 46px;font-size:12px;font-weight:800;color:#64833d;white-space:nowrap}
+#all .all-entry.is-task .all-entry-time{color:#c97b6b}
+#all .all-entry-title{flex:1;min-width:0;font-size:15px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#all .all-entry-edit{flex:0 0 30px;height:30px;border:0;border-radius:9px;background:#f0f3e4;color:#587937;font-size:17px}
+#all .all-entry-check{width:18px;height:18px;accent-color:#6f963f;flex:none}
+#all .all-action-bar{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 1px 6px;background:linear-gradient(#fbf4e8,#fbf3e5);border-top:1px solid #eae0ce}
+#all .all-action-bar button{border:0;border-radius:14px;min-height:51px;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(#94b44e,#658c2a)}
+#all .all-action-bar button+button{background:linear-gradient(#ffa998,#ef806f)}
+#all .all-empty{padding:25px 10px;text-align:center}
+@media(max-width:370px){#all.page.active{height:calc(100dvh - 169px - 69px - env(safe-area-inset-bottom) - 24px)}#all .date-group-head{font-size:13px}#all .all-entry-title{font-size:13px}}
