@@ -97,3 +97,58 @@ main{padding:12px 15px 22px}.voice{min-height:54px;border-radius:24px;font-size:
 .save,.wide,.day-dialog-actions button{background:#628664}
 .day-dialog-actions button+button{background:#df9083}
 @media(max-width:370px){.actions button{font-size:16px}.item{font-size:13px}#all .all-entry-title{font-size:14px}}
+
+/* v0.9 — initial concept composition and stable iPhone viewport */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+.app{height:100dvh;min-height:0;max-height:100dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:0;background:linear-gradient(165deg,#fcf8ef,#f5ecdb)}
+.hero{position:relative;flex:0 0 207px;height:207px;min-height:207px;overflow:hidden;background:#faf2e2;border:0;isolation:isolate}
+.hero:before,.hero:after,.leaves,.mascot{display:none!important}
+.hero-art{position:absolute;inset:0;z-index:0;background-image:url('./hero-art.webp');background-position:center center;background-repeat:no-repeat;background-size:100% 100%;pointer-events:none}
+.brand{z-index:2;position:absolute;top:12px;left:16px;right:auto;width:calc(100% - 32px);text-align:left;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.brand h1{font-size:32px;letter-spacing:-1.4px;margin:0;color:#415d36;line-height:1.1;text-shadow:0 1px 2px #fff8}
+.brand .leaf-mark{font-size:32px;color:#557942;vertical-align:0;letter-spacing:0}
+.brand p{font-size:11px;margin:0;color:#6d775d;background:#fdf8efae;padding:4px 8px;border-radius:12px}
+.hero-greeting{z-index:2;position:absolute;top:74px;left:22px;font-size:clamp(13px,3.7vw,17px);line-height:1.6;font-weight:650;color:#3e4533;text-shadow:0 1px 4px #fffdf6}
+.datebox{position:absolute;top:151px;left:18px;right:auto;width:min(53vw,230px);min-height:0;padding:8px 10px;border-radius:15px;background:#fffdf4e8;border:1px solid #fff8e8;box-shadow:0 5px 15px #9e8e7020;gap:2px;text-align:left}
+.datebox strong{font-size:clamp(11px,3vw,15px);white-space:normal;line-height:1.25}.datebox small{font-size:11px}
+main{flex:1;min-height:0;overflow:hidden;padding:0 14px 0;display:flex;flex-direction:column}
+.page.active{height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:12px 2px 14px;scrollbar-width:none}
+.page.active::-webkit-scrollbar{display:none}
+.nav{position:relative;left:auto;bottom:auto;transform:none;width:100%;max-width:none;flex:0 0 calc(70px + env(safe-area-inset-bottom));height:calc(70px + env(safe-area-inset-bottom));z-index:30}
+#all.page.active{height:100%;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding-bottom:0}
+#all .all-scroll{min-height:0;flex:1;overflow-y:auto}
+#all .all-action-bar{flex:0 0 auto;padding:9px 0 10px;background:#f9f2e6}
+#calendar.page.active{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
+#calendar .section-head,#calendar .weekdays{flex:none}
+#calendar .section-head{padding-top:3px}
+#calendar .weekdays{margin-top:11px;margin-bottom:5px}
+#calendar .calendar-grid{flex:1;min-height:0;overflow-y:auto;align-content:start;overscroll-behavior:contain;margin-top:0;padding-bottom:8px}
+#calendar .day{height:clamp(56px,8.2dvh,77px);min-height:clamp(56px,8.2dvh,77px);max-height:clamp(56px,8.2dvh,77px)}
+#calendar #selectedLabel,#calendar #selectedEvents{display:none}
+#calendar>.wide.add-event{position:relative;z-index:3;flex:none;margin:0 0 9px;min-height:53px;border-radius:14px;background:#638567;box-shadow:0 3px 10px #48684b22}
+.voice{border-radius:28px;min-height:59px;margin:0 0 4px;background:#fffcf5f5;box-shadow:0 5px 16px #8d7b5c1b}
+.actions{margin:10px 0 12px;gap:10px}.actions button{min-height:52px;font-size:16px}
+.panel{border-radius:19px;box-shadow:0 4px 15px #806b4917}
+.upcoming{background:linear-gradient(130deg,#fff9f4,#fce7e2)}
+@media(max-width:370px){.hero{flex-basis:188px;height:188px;min-height:188px}.hero-greeting{top:66px}.datebox{top:136px}.brand h1{font-size:28px}.datebox strong{font-size:11px}}
+
+/* v0.9.1: approved concept integrated botanical hero */
+.hero{flex:0 0 224px;height:224px;min-height:224px;background:#fbf0de}
+.hero-art{background-image:url('./hero-art.webp?v=091');background-size:cover;background-position:center center}
+.brand{top:13px;left:19px;width:calc(100% - 38px);display:block}
+.brand h1{font-size:35px;font-weight:850;color:#3f5d32;line-height:1.15}
+.brand .leaf-mark{color:#53783d;font-size:29px}
+.brand p{display:none}
+.hero-greeting{top:81px;left:22px;max-width:53%;font-size:clamp(13px,3.65vw,17px);line-height:1.5}
+.datebox{top:157px;left:19px;width:min(54vw,238px);padding:9px 12px;background:#fffaf0ed;border-radius:18px;box-shadow:0 4px 14px #7f6e4b1a}
+.datebox strong{font-size:clamp(11px,3vw,15px)}
+#home .voice{min-height:64px;background:#fffbf4f5;border:1px solid #e9dfcb;border-radius:30px;box-shadow:0 5px 16px #7f715425}
+#home .voice:first-letter{font-size:24px}
+#home .cards{grid-template-columns:1fr;gap:10px}
+#home .panel{padding:12px 14px}
+#home .panel h2{font-size:18px}
+#home .item{font-size:15px}
+#home .upcoming{margin-top:10px;background:linear-gradient(125deg,#fff2ef,#f9ddd8)}
+#calendar>.wide.add-event{margin-bottom:calc(12px + 2px);flex-shrink:0}
+#calendar .calendar-grid{overflow-y:auto}
+@media(max-width:370px){.hero{flex-basis:204px;height:204px;min-height:204px}.hero-greeting{top:70px}.datebox{top:140px}.brand h1{font-size:31px}}
