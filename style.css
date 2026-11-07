@@ -212,3 +212,20 @@ main{padding:8px 14px 12px!important}
 #voiceProgressText{text-align:center;font-weight:700}#voiceTranscript{font-size:13px;color:#706b60;text-align:center;overflow-wrap:anywhere}
 @keyframes wavePulse{from{opacity:.35;transform:scaleY(.72)}to{opacity:1;transform:scaleY(1.15)}}
 @media(max-height:740px){.hero{height:185px!important;min-height:185px!important;flex-basis:185px!important}.datebox{top:140px!important}.hero-greeting{top:78px!important}.hero-art{top:18px!important}}
+
+/* v0.9.5 refinements */
+.hero-art{width:39%!important;top:50px!important;right:4%!important;bottom:17px!important;height:auto!important;background-size:100% 100%!important}
+.hero-greeting{max-width:52%!important}
+#calendar .day{height:74px!important;min-height:74px!important;max-height:74px!important;padding:5px 2px 3px!important;gap:1px!important}
+#calendar .daynum{font-size:15px!important;line-height:17px!important}
+#calendar .lunarday{font-size:9px!important;line-height:11px!important}
+#calendar .eventname{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;font-size:9px!important;line-height:12px!important;max-height:12px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;-webkit-line-clamp:unset!important}
+#calendar .moreday{line-height:11px!important;font-size:9px!important}
+#settings.page.active{display:flex!important;flex-direction:column!important;overflow:hidden!important;padding-bottom:0!important}
+#settings.page.active>h2{position:relative!important;top:auto!important;flex:0 0 auto!important;margin:0!important;padding:15px 4px 13px!important;z-index:3;background:#faf5eb!important;box-shadow:none!important}
+#settings.page.active>.panel{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain;padding-bottom:28px!important}
+.voice-timer{text-align:center;color:#486c40;font-weight:800;font-variant-numeric:tabular-nums;margin:9px 0}
+#voiceStop{background:#c87865!important;color:#fff!important;margin-bottom:9px}
+#soundVolume{width:100%;accent-color:#648b61}
+#soundVolumeLabel{font-size:13px;color:#56764b}
+@media(max-height:740px){#calendar .day{height:74px!important;min-height:74px!important;max-height:74px!important}.hero-art{top:38px!important}}
