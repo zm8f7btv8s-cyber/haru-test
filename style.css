@@ -232,3 +232,9 @@ main{padding:8px 14px 12px!important}
 #calendar .moreday{font-size:9px!important;line-height:12px!important}
 #calendar .day.selected{border:1px solid #87a67c!important;background:#e8efdf!important;box-shadow:inset 0 0 0 1px #9eb697!important}
 @media(max-height:740px){.hero{height:185px!important;min-height:185px!important;flex-basis:185px!important}.datebox{top:140px!important}.hero-art{bottom:37px!important;height:101px!important}}
+
+/* v0.9.4.3 targeted iPhone layout corrections */
+.hero-settings{right:9px;top:21px;width:48px;height:48px;background:#fffaf2;box-shadow:0 2px 9px #a89b7550}
+#eventDialog .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;width:100%}
+#eventDialog .two label{min-width:0;max-width:100%;overflow:hidden}
+#eventDialog .two input{display:block;min-width:0;width:100%;max-width:100%;box-sizing:border-box;padding:10px 5px;font-size:15px}
