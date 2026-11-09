@@ -256,3 +256,32 @@ main{padding:8px 14px 12px!important}
 .detail-date-nav .detail-today{flex:0 0 49px;font-size:13px;font-weight:700}
 .detail-date-label{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;font-size:10px;color:#73806d;text-align:center}
 .detail-date-label input{display:block;width:100%;min-width:0;max-width:100%;height:42px;box-sizing:border-box;border:1px solid #dedbcf;border-radius:12px;background:#fffdf7;color:#314c31;font-size:14px;padding:4px;text-align:center}
+
+/* v0.9.4.6: slim single-line date navigator */
+.detail-date-nav{display:grid;grid-template-columns:42px minmax(0,1fr) 42px 54px;align-items:center;gap:8px;margin:16px 0 18px;width:100%;max-width:100%;min-width:0}
+.detail-date-nav button,.detail-date-label,.detail-date-label input{height:44px!important;min-height:44px!important;max-height:44px!important;box-sizing:border-box!important;margin:0!important}
+.detail-date-nav button{width:100%;min-width:0;display:flex;align-items:center;justify-content:center;padding:0!important;border-radius:13px;font-size:25px}
+.detail-date-nav .detail-today{font-size:14px}
+.detail-date-label{display:block!important;min-width:0;overflow:hidden;position:relative}
+.detail-date-label input{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;padding:0 5px!important;border-radius:13px!important;background:#fffdf7;color:#314c31;font-size:16px!important;font-weight:650;text-align:center;line-height:42px!important;appearance:none;-webkit-appearance:none}
+.detail-date-label input::-webkit-date-and-time-value{min-height:0!important;line-height:42px!important;text-align:center}
+.detail-date-label input::-webkit-datetime-edit{padding:0!important;line-height:42px!important}
+@media(max-width:380px){.detail-date-nav{grid-template-columns:38px minmax(0,1fr) 38px 46px;gap:6px}.detail-date-label input{font-size:14px!important}}
+
+/* v0.9.4.7 final: shared detail tabs, lunar date, date-picker dialog; gear untouched */
+#today-events .detail-shell{padding:4px 0 20px}
+#today-events .detail-shell>h2{font-size:23px;color:#49682b;margin:2px 0 16px}
+.detail-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;border-radius:17px;background:#edf0df;margin-bottom:19px}
+.detail-tab{border:0;border-radius:13px;background:transparent;min-height:45px;font:inherit;font-size:16px;font-weight:750;color:#758168}
+.detail-tab.active{background:#fffdf7;color:#486b2b;box-shadow:0 2px 9px #6a6b4822}
+#today-events .detail-date-nav{display:grid;grid-template-columns:46px minmax(0,1fr) 46px;gap:8px;align-items:center;margin:0 0 19px}
+#today-events .detail-date-nav>button{border:1px solid #e3dfcf;border-radius:13px;background:#fffdf7;color:#56763c;height:49px!important;max-height:none!important;min-height:49px!important;display:flex;justify-content:center;align-items:center;padding:0;font-size:29px;box-sizing:border-box}
+#today-events .detail-date-nav .detail-date-open{height:68px!important;max-height:none!important;min-height:68px!important;display:flex;flex-direction:column;gap:4px;background:transparent;border:0;color:#3b4c31;font-size:16px}
+.detail-date-open strong{font-size:clamp(15px,4.5vw,19px);white-space:nowrap}.detail-date-open small{font-size:13px;color:#8a8577}
+.detail-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid #e9e4d6;padding:18px 1px 8px;color:#445e34}.detail-section-heading span{font-size:12px;color:#918b7a}
+#today-events [hidden]{display:none!important}
+.detail-calendar-dialog{width:min(92vw,390px);border:0;border-radius:22px;padding:19px;background:#fffdf7;color:#35432c;box-shadow:0 16px 60px #0003}
+.detail-calendar-dialog::backdrop{background:#24271b77}
+.detail-calendar-head{display:flex;justify-content:space-between;align-items:center;margin:14px 0 12px}.detail-calendar-head button{border:0;background:#eff2e4;border-radius:11px;width:40px;height:40px;font-size:25px;color:#4e7034}
+.detail-calendar-week,.detail-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}.detail-calendar-week{font-size:12px;color:#817d70;margin-bottom:7px}.detail-calendar-week span{padding:5px 0}
+.detail-cal-day{border:0;border-radius:11px;aspect-ratio:1;background:#f7f4e9;font:inherit;font-size:14px;color:#374530}.detail-cal-day.sun{color:#c96563}.detail-cal-day.sat{color:#628ac0}.detail-cal-day.picked{background:#6f923e;color:#fff;font-weight:800}
