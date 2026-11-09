@@ -16,9 +16,10 @@ function eventLine(e){return `<div class="item"><time>${esc(e.time)}</time><span
 function taskLine(t){return `<div class="item taskline"><input type="checkbox" data-task="${esc(t.id)}" ${t.done?'checked':''} aria-label="완료 표시"><span class="item-title ${t.done?'done':''}">${esc(t.title)}</span><button class="edit-mini" data-edit="task" data-id="${esc(t.id)}" aria-label="${esc(t.title)} 수정">✎</button></div>`}
 function more(container,n,type){$(container).innerHTML=n>0?`<button class="more-link" data-page="today-${type}">+ ${n}개 더 보기 ›</button>`:''}
 function renderHome(){const events=sortedEvents(data.events.filter(e=>e.date===today)),tasks=data.tasks.filter(t=>t.date===today);
-$('todayEvents').innerHTML=events.length?events.slice(0,3).map(eventLine).join(''):'<p class="empty">오늘 등록된 일정이 없어.</p>';
-$('todayTasks').innerHTML=tasks.length?tasks.slice(0,3).map(taskLine).join(''):'<p class="empty">오늘 할 일이 없어.</p>';
-more('moreEvents',events.length-3,'events');more('moreTasks',tasks.length-3,'tasks');
+$('todayEvents').innerHTML=events.length?events.map(eventLine).join(''):'<p class="empty">오늘 등록된 일정이 없어.</p>';
+$('todayTasks').innerHTML=tasks.length?tasks.map(taskLine).join(''):'<p class="empty">오늘 할 일이 없어.</p>';
+$('homeEventsCount').textContent=`총 ${events.length}개`;
+$('homeTasksCount').textContent=`총 ${tasks.length}개`;
 const detailEvents=sortedEvents(data.events.filter(e=>e.date===detailDate));
 const detailTasks=data.tasks.filter(t=>t.date===detailDate);
 $('todayEventsFull').innerHTML=detailEvents.length?detailEvents.map(eventLine).join(''):'<p class="empty">선택한 날짜에 등록된 일정이 없어.</p>';
@@ -31,8 +32,9 @@ $('detailListHeading').textContent=detailKind==='events'?`일정 ${detailEvents.
 $('todayEventsFull').hidden=detailKind!=='events';$('todayTasksFull').hidden=detailKind!=='tasks';
 $('detailAddEvent').hidden=detailKind!=='events';$('detailAddTask').hidden=detailKind!=='tasks';
 document.querySelectorAll('.detail-tab').forEach(b=>{const active=b.dataset.detailKind===detailKind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
-const upcoming=sortedEvents(data.events.filter(e=>e.date>=today)).slice(0,2);
-$('upcomingEvents').innerHTML=upcoming.length?upcoming.map(e=>`<div class="upcoming-row"><strong>${esc(e.date.slice(5).replace('-','/'))} · ${esc(e.time)}</strong><span>${esc(e.title)}</span><button data-edit="event" data-id="${esc(e.id)}" aria-label="수정">✎</button></div>`).join(''):'<p class="empty">예정된 일정이 없어.</p>';
+const upcoming=sortedEvents(data.events.filter(e=>e.date>today));
+$('homeUpcomingCount').textContent=`총 ${upcoming.length}개`;
+$('upcomingEvents').innerHTML=upcoming.length?upcoming.map(e=>`<div class="upcoming-row"><strong>${esc(e.date.slice(5).replace('-','/'))}</strong><time>${esc(e.time||'')}</time><span>${esc(e.title)}</span><button data-edit="event" data-id="${esc(e.id)}" aria-label="수정">✎</button></div>`).join(''):'<p class="empty">예정된 일정이 없어.</p>';
 }
 function dayItems(day){return [...sortedEvents(data.events.filter(e=>e.date===day)).map(x=>({...x,kind:'event'})),...data.tasks.filter(t=>t.date===day).map(x=>({...x,kind:'task'}))]}
 function renderCalendar(){
@@ -56,7 +58,7 @@ function renderAll(){
  const dates=[...new Set([...(filter!=='task'?data.events:[]),...(filter!=='event'?data.tasks:[])].map(x=>x.date))].sort();
  const eventRows=items=>sortedEvents(items).map(x=>`<div class="all-entry"><span class="all-entry-time">${esc(x.time||'미정')}</span><span class="all-entry-title">${esc(x.title)}</span><button class="all-entry-edit" data-edit="event" data-id="${esc(x.id)}" aria-label="${esc(x.title)} 수정">✎</button></div>`).join('');
  const taskRows=items=>items.slice().sort((a,b)=>Number(a.done)-Number(b.done)||a.title.localeCompare(b.title)).map(x=>`<div class="all-entry is-task"><input class="all-entry-check" type="checkbox" data-task="${esc(x.id)}" ${x.done?'checked':''} aria-label="${esc(x.title)} 완료 표시"><span class="all-entry-title ${x.done?'done':''}">${esc(x.title)}</span><button class="all-entry-edit" data-edit="task" data-id="${esc(x.id)}" aria-label="${esc(x.title)} 수정">✎</button></div>`).join('');
- $('allItems').innerHTML=dates.length?dates.map(date=>{const ev=data.events.filter(x=>x.date===date),tasks=data.tasks.filter(x=>x.date===date),n=(filter==='task'?0:ev.length)+(filter==='event'?0:tasks.length);return `<section class="date-group"><div class="date-group-head"><span class="date-group-label">${esc(format(parse(date)))}</span><span class="date-group-count">${n}개</span></div><div class="date-group-items">${ev.length&&filter!=='task'?`<div class="group-type event-type">일정 · ${ev.length}개</div>${eventRows(ev)}`:''}${tasks.length&&filter!=='event'?`<div class="group-type task-type">할 일 · ${tasks.length}개</div>${taskRows(tasks)}`:''}</div></section>`}).join(''):'<p class="empty all-empty">등록된 항목이 없어. 아래 버튼으로 추가해 봐.</p>';
+ $('allItems').innerHTML=dates.length?dates.map(date=>{const ev=data.events.filter(x=>x.date===date),tasks=data.tasks.filter(x=>x.date===date),n=(filter==='task'?0:ev.length)+(filter==='event'?0:tasks.length);return `<section class="date-group"><div class="date-group-head"><span class="date-group-label">${esc(format(parse(date)))}</span><span class="date-group-count">${filter==='all'?`${ev.length?`일정 ${ev.length}`:''}${ev.length&&tasks.length?' · ':''}${tasks.length?`할 일 ${tasks.length}`:''}`:`${n}개`}</span></div><div class="date-group-items">${ev.length&&filter!=='task'?`${eventRows(ev)}`:''}${tasks.length&&filter!=='event'?`${taskRows(tasks)}`:''}</div></section>`}).join(''):'<p class="empty all-empty">등록된 항목이 없어. 아래 버튼으로 추가해 봐.</p>';
 }
 function refresh(){renderHome();renderCalendar();renderAll()}
 function openDialog(type,id=null){editing=id?{type,id}:null;const dialog=$(type==='event'?'eventDialog':'taskDialog'),f=dialog.querySelector('form');f.reset();f.elements.date.value=id?today:(document.querySelector('#calendar.page.active')?selected:document.querySelector('#today-events.page.active')?detailDate:today);const old=id?data[type==='event'?'events':'tasks'].find(x=>x.id===id):null;
