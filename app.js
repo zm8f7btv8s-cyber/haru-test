@@ -26,8 +26,8 @@ $('todayTasksFull').innerHTML=detailTasks.length?detailTasks.map(taskLine).join(
 const dd=parse(detailDate);
 $('detailDateText').textContent=dd.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
 $('detailLunarText').textContent=lunar(dd);
-$('detailShortDate').textContent=dd.toLocaleDateString('ko-KR',{month:'long',day:'numeric'});
-$('detailListHeading').textContent=detailKind==='events'?'선택한 날짜의 일정':'선택한 날짜의 할 일';
+$('detailShortDate').textContent=detailKind==='events'?'시간순':'등록순';
+$('detailListHeading').textContent=detailKind==='events'?`일정 ${detailEvents.length}건`:`할 일 ${detailTasks.length}건`;
 $('todayEventsFull').hidden=detailKind!=='events';$('todayTasksFull').hidden=detailKind!=='tasks';
 $('detailAddEvent').hidden=detailKind!=='events';$('detailAddTask').hidden=detailKind!=='tasks';
 document.querySelectorAll('.detail-tab').forEach(b=>{const active=b.dataset.detailKind===detailKind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});

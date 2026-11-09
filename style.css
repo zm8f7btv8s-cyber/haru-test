@@ -314,3 +314,47 @@ main{padding:8px 14px 12px!important}
 /* Calendar date popup add actions use the same 40px control height. */
 .day-dialog .day-dialog-actions{width:88%;margin-left:auto;margin-right:auto}
 .day-dialog .day-dialog-actions button{height:40px;min-height:40px;padding:0 4px;border-radius:12px}
+
+/* v0.9.5.0 — premium system: shared alignments, restrained palette; original hero/gear untouched */
+:root{--haru-forest:#365c42;--haru-ink:#304b39;--haru-ivory:#fffefa;--haru-line:#e9e5d9}
+#today-events .detail-shell{padding:1px 0 7px!important;gap:0}
+#today-events .detail-shell>h2{font-size:21px!important;letter-spacing:-.045em;color:var(--haru-ink)!important;margin:2px 0 10px!important}
+#today-events .premium-date-card{flex:0 0 auto;background:var(--haru-ivory);border:1px solid var(--haru-line);border-radius:19px;padding:10px 11px 11px;margin:0 0 11px;box-shadow:0 3px 13px #544c3510}
+#today-events .premium-date-card .detail-date-nav{margin:0 0 8px!important;grid-template-columns:37px minmax(0,1fr) 37px;gap:5px}
+#today-events .premium-date-card .detail-date-nav>button:not(.detail-date-open){width:37px;height:38px!important;min-height:38px!important;border:0;background:#f2f3ed;border-radius:11px;color:#506c55;font-size:24px}
+#today-events .premium-date-card .detail-date-nav .detail-date-open{height:51px!important;min-height:51px!important;gap:2px!important}
+#today-events .detail-date-open strong{font-size:clamp(15px,4.25vw,19px)!important;letter-spacing:-.04em;color:#2f4837}
+#today-events .detail-date-open small{font-size:12px!important;color:#848b7d}
+#today-events .premium-date-card .detail-tabs{width:100%!important;max-width:none!important;margin:0!important;background:#f0f1e9!important;padding:3px!important;gap:3px!important;border-radius:12px!important}
+#today-events .premium-date-card .detail-tab{height:37px!important;min-height:37px!important;border-radius:10px!important;color:#808d80!important}
+#today-events .premium-date-card .detail-tab.active{background:#fff!important;color:#365c42!important;box-shadow:0 1px 5px #37483214}
+#today-events .detail-section-heading{border-top:0!important;padding:2px 2px 9px!important;margin:0!important}
+#today-events .detail-section-heading strong{font-size:16px;color:var(--haru-ink);letter-spacing:-.025em}
+#today-events .detail-section-heading strong:before{content:"";display:inline-block;vertical-align:-2px;width:3px;height:16px;border-radius:2px;background:#638568;margin-right:9px}
+#today-events .detail-section-heading span{font-size:12px;color:#8c9589}
+#today-events .detail-list-scroll{background:var(--haru-ivory);border:1px solid var(--haru-line);border-radius:18px;padding:3px 12px 12px!important;box-shadow:0 3px 13px #544c350c}
+#today-events .detail-list-scroll .item{min-height:43px;padding:9px 2px!important;border-top:0;border-bottom:1px solid #eeece5;gap:10px;font-size:15px}
+#today-events .detail-list-scroll .item:last-child{border-bottom:0}
+#today-events .detail-list-scroll .item time{flex:0 0 44px;font-size:12px;color:#53765b;font-weight:700}
+#today-events .detail-list-scroll .item-title{color:#34473a}
+#today-events .detail-list-scroll .edit-mini{color:#829a84}
+#today-events #detailAddEvent,#today-events #detailAddTask{width:100%!important;max-width:100%!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;margin:10px 0 0!important;background:#365c42!important;color:white!important;border-radius:13px!important;box-shadow:0 4px 10px #365c421c!important;font-size:15px;font-weight:750}
+#calendar > .wide.add-event{width:100%!important;max-width:100%!important;height:44px!important;min-height:44px!important;max-height:44px!important;flex:0 0 44px!important;background:#365c42!important;border-radius:13px!important;margin:8px 0 9px!important}
+#all .filter{width:100%!important;max-width:100%!important;margin:12px 0!important;background:#f0f1e9;border-radius:13px;padding:3px}
+#all .filter-btn{border-radius:10px!important;min-height:38px;padding:7px 5px}
+#all .filter-btn.selected{background:#fff!important;color:#365c42!important;border-color:transparent!important;box-shadow:0 1px 6px #304b3916}
+#all .all-action-bar{width:100%!important;max-width:100%!important;gap:9px!important;border-top:0!important;background:transparent!important;padding:9px 0 6px!important}
+#all .all-action-bar button{height:44px!important;min-height:44px!important;border-radius:13px!important;font-size:14px!important}
+#all .all-action-bar button:first-child{background:#365c42!important}
+#all .all-action-bar button:last-child{background:#b78377!important}
+#all .date-group{border-radius:17px;border-color:var(--haru-line);box-shadow:0 3px 12px #544c350c}
+#all .date-group-head{background:#edf1e9;color:#41634a}
+#home .actions{width:100%!important;max-width:100%!important;gap:9px!important}
+#home .actions button{height:44px!important;min-height:44px!important;border-radius:13px!important}
+#home .actions button:first-child{background:#365c42!important}
+#home .actions button:last-child{background:#b78377!important}
+#calendar .calendar-grid{padding-bottom:16px!important}
+#calendar .day{height:clamp(57px,7.4dvh,74px)!important;min-height:clamp(57px,7.4dvh,74px)!important;max-height:clamp(57px,7.4dvh,74px)!important}
+#calendar .day.selected{background:#eaf0e6!important;border-color:#7c9b7c!important}
+#calendar .section-head h2,#all .all-top h2{color:#365c42}
+@media(max-height:720px){#today-events .premium-date-card{padding:6px 9px 8px}#today-events .detail-shell>h2{margin-bottom:6px!important}#calendar .day{height:55px!important;min-height:55px!important;max-height:55px!important}}
