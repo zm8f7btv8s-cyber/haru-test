@@ -1,6 +1,7 @@
 (()=>{'use strict';
 const VOICE_KEY='haru.fresh.voice.mode', KEY='haru.fresh.test.v1', $=id=>document.getElementById(id), dateKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`, parse=s=>new Date(s+'T12:00:00'),today=dateKey(new Date());
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let detailDates={events:today,tasks:today};
 let selected=today,month=new Date().getMonth(),year=new Date().getFullYear(),filter='all',editing=null;
 let data={events:[],tasks:[]};try{let v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&Array.isArray(v.events)&&Array.isArray(v.tasks))data=v}catch{}
 const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
@@ -8,7 +9,7 @@ const format=d=>`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 ($
 const lunar=d=>{try{return '음력 '+new Intl.DateTimeFormat('ko-KR-u-ca-chinese',{month:'numeric',day:'numeric'}).format(d)}catch{return '음력 표시 미지원'}};
 function lunarParts(d){try{const parts=new Intl.DateTimeFormat('ko-KR-u-ca-chinese',{month:'numeric',day:'numeric'}).formatToParts(d),m=parts.find(x=>x.type==='month')?.value||'',day=parts.find(x=>x.type==='day')?.value||'';return day==='1'?`음 ${m}.${day}`:day}catch{return ''}}
 function header(){const d=new Date();$('dateText').textContent=format(d);$('lunarText').textContent=lunar(d)}
-function showPage(name){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===name));document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('selected',e.dataset.page===name));if(name==='calendar')renderCalendar();if(name==='all')renderAll();if(name.startsWith('today'))renderHome();window.scrollTo(0,0)}
+function showPage(name){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===name));document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('selected',e.dataset.page===name));if(name==='calendar')renderCalendar();if(name==='all')renderAll();if(name.startsWith('today')){const k=name==='today-events'?'events':'tasks';detailDates[k]=today;renderHome()};window.scrollTo(0,0)}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
 const sortedEvents=a=>[...a].sort((x,y)=>x.date.localeCompare(y.date)||(x.time||'').localeCompare(y.time||'')||x.title.localeCompare(y.title));
 function eventLine(e){return `<div class="item"><time>${esc(e.time)}</time><span class="item-title">${esc(e.title)}</span><button class="edit-mini" data-edit="event" data-id="${esc(e.id)}" aria-label="${esc(e.title)} 수정">✎</button></div>`}
@@ -18,8 +19,11 @@ function renderHome(){const events=sortedEvents(data.events.filter(e=>e.date===t
 $('todayEvents').innerHTML=events.length?events.slice(0,3).map(eventLine).join(''):'<p class="empty">오늘 등록된 일정이 없어.</p>';
 $('todayTasks').innerHTML=tasks.length?tasks.slice(0,3).map(taskLine).join(''):'<p class="empty">오늘 할 일이 없어.</p>';
 more('moreEvents',events.length-3,'events');more('moreTasks',tasks.length-3,'tasks');
-$('todayEventsFull').innerHTML=events.length?events.map(eventLine).join(''):'<p class="empty">오늘 등록된 일정이 없어.</p>';
-$('todayTasksFull').innerHTML=tasks.length?tasks.map(taskLine).join(''):'<p class="empty">오늘 할 일이 없어.</p>';
+const detailEvents=sortedEvents(data.events.filter(e=>e.date===detailDates.events));
+const detailTasks=data.tasks.filter(t=>t.date===detailDates.tasks);
+$('todayEventsFull').innerHTML=detailEvents.length?detailEvents.map(eventLine).join(''):'<p class="empty">선택한 날짜에 등록된 일정이 없어.</p>';
+$('todayTasksFull').innerHTML=detailTasks.length?detailTasks.map(taskLine).join(''):'<p class="empty">선택한 날짜에 할 일이 없어.</p>';
+for(const kind of ['events','tasks']){$('detailDate-'+kind).value=detailDates[kind]}
 const upcoming=sortedEvents(data.events.filter(e=>e.date>=today)).slice(0,2);
 $('upcomingEvents').innerHTML=upcoming.length?upcoming.map(e=>`<div class="upcoming-row"><strong>${esc(e.date.slice(5).replace('-','/'))} · ${esc(e.time)}</strong><span>${esc(e.title)}</span><button data-edit="event" data-id="${esc(e.id)}" aria-label="수정">✎</button></div>`).join(''):'<p class="empty">예정된 일정이 없어.</p>';
 }
@@ -48,11 +52,19 @@ function renderAll(){
  $('allItems').innerHTML=dates.length?dates.map(date=>{const ev=data.events.filter(x=>x.date===date),tasks=data.tasks.filter(x=>x.date===date),n=(filter==='task'?0:ev.length)+(filter==='event'?0:tasks.length);return `<section class="date-group"><div class="date-group-head"><span class="date-group-label">${esc(format(parse(date)))}</span><span class="date-group-count">${n}개</span></div><div class="date-group-items">${ev.length&&filter!=='task'?`<div class="group-type event-type">일정 · ${ev.length}개</div>${eventRows(ev)}`:''}${tasks.length&&filter!=='event'?`<div class="group-type task-type">할 일 · ${tasks.length}개</div>${taskRows(tasks)}`:''}</div></section>`}).join(''):'<p class="empty all-empty">등록된 항목이 없어. 아래 버튼으로 추가해 봐.</p>';
 }
 function refresh(){renderHome();renderCalendar();renderAll()}
-function openDialog(type,id=null){editing=id?{type,id}:null;const dialog=$(type==='event'?'eventDialog':'taskDialog'),f=dialog.querySelector('form');f.reset();f.elements.date.value=id?today:(document.querySelector('#calendar.page.active')?selected:today);const old=id?data[type==='event'?'events':'tasks'].find(x=>x.id===id):null;
+function openDialog(type,id=null){editing=id?{type,id}:null;const dialog=$(type==='event'?'eventDialog':'taskDialog'),f=dialog.querySelector('form');f.reset();f.elements.date.value=id?today:(document.querySelector('#calendar.page.active')?selected:document.querySelector('#today-events.page.active')?detailDates.events:document.querySelector('#today-tasks.page.active')?detailDates.tasks:today);const old=id?data[type==='event'?'events':'tasks'].find(x=>x.id===id):null;
 if(type==='event'){f.elements.time.value=old?.time||'10:00';f.elements.place.value=old?.place||'';['prev','morning','before'].forEach(n=>f.elements[n].checked=old?.reminders?.[n]??true);$('eventDialogTitle').textContent=id?'일정 수정':'일정 등록';$('deleteEvent').hidden=!id}else{$('taskDialogTitle').textContent=id?'할 일 수정':'할 일 등록';$('deleteTask').hidden=!id}if(old){f.elements.namedItem("title").value=old.title;f.elements.date.value=old.date}dialog.showModal()}
 function remove(type,id){if(!confirm(type==='event'?'이 일정을 삭제할까?':'이 할 일을 삭제할까?'))return;const k=type==='event'?'events':'tasks';data[k]=data[k].filter(x=>x.id!==id);save();$('eventDialog').close();$('taskDialog').close();editing=null;refresh()}
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.date){openDayDialog(b.dataset.date)}else if(b.dataset.edit){if($('dayDialog').open)$('dayDialog').close();openDialog(b.dataset.edit,b.dataset.id)}else if(b.dataset.delete){remove(b.dataset.delete,b.dataset.id)}else if(b.classList.contains('more-link'))showPage(b.dataset.page)});
 document.addEventListener('change',e=>{if(!e.target.matches('[data-task]'))return;const t=data.tasks.find(x=>x.id===e.target.dataset.task);if(t){t.done=e.target.checked;save();refresh()}});
+document.querySelectorAll('.detail-date-nav').forEach(nav=>{
+ const kind=nav.dataset.kind,input=nav.querySelector('input[type=date]');
+ const setDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return;detailDates[kind]=value;renderHome()};
+ input.addEventListener('change',()=>setDate(input.value));
+ nav.querySelector('.detail-prev').onclick=()=>{const d=parse(detailDates[kind]);d.setDate(d.getDate()-1);setDate(dateKey(d))};
+ nav.querySelector('.detail-next').onclick=()=>{const d=parse(detailDates[kind]);d.setDate(d.getDate()+1);setDate(dateKey(d))};
+ nav.querySelector('.detail-today').onclick=()=>setDate(today);
+});
 document.querySelectorAll('.add-event').forEach(b=>b.addEventListener('click',()=>openDialog('event')));document.querySelectorAll('.add-task').forEach(b=>b.addEventListener('click',()=>openDialog('task')));
 $('dayAddEvent').onclick=()=>{const d=selected;$('dayDialog').close();openDialog('event');$('eventForm').elements.date.value=d};$('dayAddTask').onclick=()=>{const d=selected;$('dayDialog').close();openDialog('task');$('taskForm').elements.date.value=d};document.querySelectorAll('.close').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
 $('eventForm').addEventListener('submit',e=>{e.preventDefault();const f=e.target,values={title:f.elements.namedItem("title").value.trim(),date:f.elements.date.value,time:f.elements.time.value,place:f.elements.place.value.trim(),reminders:{prev:f.elements.prev.checked,morning:f.elements.morning.checked,before:f.elements.before.checked}};if(!values.title)return;if(editing?.type==='event'){const item=data.events.find(x=>x.id===editing.id);if(item)Object.assign(item,values)}else data.events.push({id:crypto.randomUUID?.()||String(Date.now()),...values});save();$('eventDialog').close();editing=null;refresh();voiceDone()});
