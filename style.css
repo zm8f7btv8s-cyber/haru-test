@@ -458,3 +458,41 @@ main{padding:8px 14px 12px!important}
 #eventDialog,#taskDialog{scrollbar-width:thin;scrollbar-color:#b8baa9 #f3eee4}
 #eventDialog::-webkit-scrollbar,#taskDialog::-webkit-scrollbar{width:5px}
 #eventDialog::-webkit-scrollbar-thumb,#taskDialog::-webkit-scrollbar-thumb{background:#b8baa9;border-radius:10px}
+
+/* v0.9.5.4: viewport-fitted three-card home; two visible entries per card */
+#home.page.active{padding-top:7px!important;}
+#home>.voice{min-height:42px!important;height:42px!important;padding:7px 13px!important;flex:0 0 42px!important}
+#home>.actions{margin:8px 0 9px!important;gap:9px!important;flex:0 0 40px!important}
+#home .actions button{height:40px!important;min-height:40px!important}
+#home .home-scroll{display:flex!important;flex-direction:column!important;gap:8px!important;overflow:hidden!important;padding:0 2px 4px!important;flex:1 1 auto!important;min-height:0!important}
+#home .cards{display:contents!important}
+#home .cards .panel,#home .home-upcoming-card{flex:1 1 0!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:6px 10px 7px!important;border-radius:19px!important}
+#home .panel h2{flex:0 0 30px!important;height:30px!important;min-height:30px!important;max-height:30px!important;font-size:clamp(15px,3.7vw,18px)!important;padding:0 0 3px!important;white-space:nowrap!important}
+#home .panel h2 .go{width:24px!important;height:24px!important;flex:0 0 24px!important}
+#home .card-scroll{flex:1 1 auto!important;min-height:0!important;position:relative!important;padding-right:17px!important;scrollbar-width:none!important}
+#home .card-scroll::-webkit-scrollbar,#all .all-scroll::-webkit-scrollbar,#today-events .detail-list-scroll::-webkit-scrollbar{display:none!important}
+#home .item{padding:5px 0!important;min-height:35px!important;line-height:1.25!important;font-size:clamp(13px,3.4vw,15px)!important}
+#home .item time{display:inline!important;margin:0 7px 0 0!important;font-size:12px!important}
+#home .upcoming-row{min-height:35px!important;padding:4px 0!important}
+#home .taskline{align-items:center!important}
+#home .taskline input{margin:0!important}
+/* Stable custom scroll indicator: real proportional thumb, updated by app script */
+.haru-scroll-rail{position:absolute;right:2px;top:4px;bottom:4px;width:9px;border-radius:99px;background:#e5ece1;pointer-events:none;z-index:3;overflow:hidden}
+.haru-scroll-thumb{position:absolute;left:1px;right:1px;top:0;height:38%;border-radius:99px;background:#6d956e;box-shadow:inset 0 1px 2px #ffffff99;transition:top .08s linear,height .08s linear}
+.home-tasks-card .haru-scroll-rail{background:#f6e5e1}.home-tasks-card .haru-scroll-thumb{background:#bb8078}
+.home-upcoming-card .haru-scroll-rail{background:#f5e9d5}.home-upcoming-card .haru-scroll-thumb{background:#b58e4d}
+#all .all-scroll,#today-events .detail-list-scroll{position:relative!important;padding-right:15px!important}
+#all .haru-scroll-rail,#today-events .haru-scroll-rail{right:1px;width:9px}
+/* iOS custom scrollbar rail sits in stable wrapper, outside scroll content */
+.haru-scroll-host{position:relative!important;min-height:0!important;flex:1 1 auto!important;display:flex!important;flex-direction:column!important}
+.haru-scroll-host>.card-scroll,.haru-scroll-host>.all-scroll,.haru-scroll-host>.detail-list-scroll{flex:1 1 auto!important;min-height:0!important}
+#calendar .section-head button{display:grid!important;place-items:center!important;width:40px!important;height:40px!important;padding:0!important;border-radius:50%!important;background:#f7f7ef!important;border:1px solid #c9d5b5!important;color:#365c42!important;font-size:29px!important;font-weight:500!important;box-shadow:0 2px 8px #304d2714!important}
+#today-events .premium-date-card .detail-tabs{background:#f4eee9!important;border:1px solid #eee8df!important;border-radius:16px!important;padding:4px!important;gap:5px!important}
+#today-events .premium-date-card .detail-tab{height:42px!important;min-height:42px!important;font-weight:750!important;font-size:16px!important;border-radius:13px!important;box-shadow:none!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="events"]{color:#365c42!important;background:#e9f0e8!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="tasks"]{color:#a36a63!important;background:#f7e7e3!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="events"].active{color:#fff!important;background:#365c42!important;box-shadow:0 2px 7px #365c4233!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="tasks"].active{color:#fff!important;background:#b9837b!important;box-shadow:0 2px 7px #b9837b33!important}
+#eventDialog input[type=date],#eventDialog input[type=time],#taskDialog input[type=date]{font-size:20px!important;font-weight:600!important;letter-spacing:-.02em!important;text-align:center!important}
+/* keep at least two rows in each card at standard iPhone viewport sizes */
+@media(max-height:770px){.hero{height:180px!important;min-height:180px!important;flex-basis:180px!important}.datebox{top:136px!important}.hero-greeting{top:68px!important}.hero-art{top:9px!important}#home .home-scroll{gap:6px!important}#home .panel h2{flex-basis:28px!important;min-height:28px!important;max-height:28px!important}}
