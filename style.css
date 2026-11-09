@@ -285,3 +285,10 @@ main{padding:8px 14px 12px!important}
 .detail-calendar-head{display:flex;justify-content:space-between;align-items:center;margin:14px 0 12px}.detail-calendar-head button{border:0;background:#eff2e4;border-radius:11px;width:40px;height:40px;font-size:25px;color:#4e7034}
 .detail-calendar-week,.detail-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}.detail-calendar-week{font-size:12px;color:#817d70;margin-bottom:7px}.detail-calendar-week span{padding:5px 0}
 .detail-cal-day{border:0;border-radius:11px;aspect-ratio:1;background:#f7f4e9;font:inherit;font-size:14px;color:#374530}.detail-cal-day.sun{color:#c96563}.detail-cal-day.sat{color:#628ac0}.detail-cal-day.picked{background:#6f923e;color:#fff;font-weight:800}
+
+/* v0.9.4.8: Fixed detail add button; independent scrolling list. */
+#today-events.page.active{display:flex;flex-direction:column;overflow:hidden;height:100%;min-height:0}
+#today-events .detail-shell{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;height:100%;padding-bottom:6px}
+#today-events .detail-shell>h2,#today-events .detail-tabs,#today-events .detail-date-nav,#today-events .detail-section-heading{flex-shrink:0}
+#today-events .detail-list-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+#today-events #detailAddEvent,#today-events #detailAddTask{flex:0 0 auto;margin-top:10px;margin-bottom:0}
