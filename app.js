@@ -115,8 +115,8 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
   $('voiceTranscript').textContent=spoken||'말씀하신 내용이 여기에 표시돼요.';
  }
  function voiceDone(){if(!voiceSavePending)return;voiceSavePending=false;voiceDraft=null;playVoiceTone('end')}
- function voiceTextOf(s){return [s.finalText,s.interimText].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()}
- function updateVoice(s,message){voiceStep(s.listening?'listen':'prepare',message,voiceTextOf(s));$('voiceFinish').disabled=!voiceTextOf(s)}
+ function voiceTextOf(s){return [s.finalText,s.cycleFinal,s.interimText].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()}
+ function updateVoice(s,message){voiceStep(s.listening?'listen':'prepare',message,voiceTextOf(s));$('voiceFinish').disabled=false}
  function releaseRecognition(s){const r=s.recognition;s.recognition=null;s.listening=false;if(r){r.onstart=null;r.onresult=null;r.onerror=null;r.onend=null;try{r.abort()}catch{}}}
  function stopVoiceSession(s){if(!s||s.stopped)return;s.stopped=true;clearTimeout(s.retryTimer);clearTimeout(s.finishTimer);releaseRecognition(s);if(voiceSession===s)voiceSession=null;voiceBusy=false;$('voice').classList.remove('listening')}
  function cancelVoice(){const s=voiceSession;stopVoiceSession(s);voiceSavePending=false;voiceDraft=null;pendingVoice=null;if(voiceProgress.open)voiceProgress.close()}
@@ -138,7 +138,7 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
    s.cycleFinal=final.trim();s.interimText=interim.trim();updateVoice(s,'듣고 있어요 · 다 말씀하시면 완료를 눌러 줘')};
   r.onerror=e=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;s.lastError=e.error||'unknown'};
   r.onend=()=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;
-   const fragment=[s.cycleFinal,s.interimText].filter(Boolean).join(' ').trim();if(fragment)s.finalText=[s.finalText,fragment].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText='';s.recognition=null;s.listening=false;$('voice').classList.remove('listening');
+   const fragment=[s.cycleFinal,s.interimText].filter(Boolean).join(' ').trim();if(fragment)s.finalText=[s.finalText,fragment].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText='';s.recognition=null;s.listening=false;$('voice').classList.remove('listening');updateVoice(s,'잠시 쉬는 중 · 완료하거나 이어서 말해 줘');
    if(s.finishing){processVoice(s);return}
    const err=s.lastError;s.lastError=null;
    if(['not-allowed','service-not-allowed','audio-capture'].includes(err)){voicePause(s,'마이크 접근이 중단됐어. 권한을 확인해 줘.');return}
@@ -152,13 +152,13 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
  function finishVoice(){const s=voiceSession;if(!s||s.stopped||s.finishing)return;s.finishing=true;clearTimeout(s.retryTimer);$('voiceResume').hidden=true;$('voiceFinish').disabled=true;voiceStep('prepare','말씀하신 내용을 정리 중…',voiceTextOf(s));
   if(!s.recognition){processVoice(s);return}
   try{s.recognition.stop()}catch{processVoice(s)}
-  s.finishTimer=setTimeout(()=>{if(voiceSession===s&&!s.stopped)processVoice(s)},1600);
+  s.finishTimer=setTimeout(()=>{if(voiceSession===s&&!s.stopped){if(s.cycleFinal||s.interimText){s.finalText=[s.finalText,s.cycleFinal,s.interimText].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText=''}processVoice(s)}},1600);
  }
  $('voiceFinish').onclick=finishVoice;
  $('voiceResume').onclick=()=>{const s=voiceSession;if(!s||s.stopped||s.finishing)return;clearTimeout(s.retryTimer);if(s.recognition){try{s.recognition.abort()}catch{}return} s.failures=0;startVoiceCycle(s)};
  $('voice').onclick=()=>{if(voiceBusy)return;unlockVoiceAudio();const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('이 브라우저에서는 음성 인식을 지원하지 않아.');return}
   voiceBusy=true;const s={SR,finalText:'',cycleFinal:'',interimText:'',recognition:null,stopped:false,finishing:false,listening:false,failures:0,lastError:null,hasStarted:false,retryTimer:null,finishTimer:null};voiceSession=s;
-  $('voiceResume').hidden=true;$('voiceFinish').disabled=true;voiceStep('prepare','마이크 준비 중…','말씀을 천천히 이어서 해 줘. 다 말하면 완료를 눌러 줘.');voiceProgress.showModal();startVoiceCycle(s)
+  $('voiceResume').hidden=true;$('voiceFinish').disabled=false;voiceStep('prepare','마이크 준비 중…','말씀을 천천히 이어서 해 줘. 다 말하면 완료를 눌러 줘.');voiceProgress.showModal();startVoiceCycle(s)
  };
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='haru-test-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};$('importButton').onclick=()=>$('importFile').click();
 $('importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>5*1024*1024)throw Error('파일 크기가 너무 커.');const imported=JSON.parse(await file.text());if(!imported||!Array.isArray(imported.events)||!Array.isArray(imported.tasks))throw Error('하루 백업 파일 형식이 아니야.');const valid=a=>a.every(x=>x&&typeof x==='object'&&typeof x.title==='string'&&typeof x.date==='string'&&/^\\d{4}-\\d{2}-\\d{2}$/.test(x.date)&&typeof x.id==='string');if(!valid(imported.events)||!valid(imported.tasks))throw Error('백업 데이터에 오류가 있어.');if(!confirm(`백업에서 일정 ${imported.events.length}개, 할 일 ${imported.tasks.length}개를 복원할까?\\n현재 저장된 데이터는 교체되지만 복원 전 자동 백업 파일을 내려받아.`))return;const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='haru-before-restore-'+dateKey(new Date())+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);data={events:imported.events,tasks:imported.tasks};save();refresh();alert('복원 완료! 일정과 할 일을 확인해 줘.')}catch(err){alert('복원하지 못했어: '+err.message)}finally{e.target.value=''}};
