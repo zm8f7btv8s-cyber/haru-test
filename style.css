@@ -496,3 +496,23 @@ main{padding:8px 14px 12px!important}
 #eventDialog input[type=date],#eventDialog input[type=time],#taskDialog input[type=date]{font-size:20px!important;font-weight:600!important;letter-spacing:-.02em!important;text-align:center!important}
 /* keep at least two rows in each card at standard iPhone viewport sizes */
 @media(max-height:770px){.hero{height:180px!important;min-height:180px!important;flex-basis:180px!important}.datebox{top:136px!important}.hero-greeting{top:68px!important}.hero-art{top:9px!important}#home .home-scroll{gap:6px!important}#home .panel h2{flex-basis:28px!important;min-height:28px!important;max-height:28px!important}}
+
+/* v0.9.5.5: voice-only refinement */
+#home>.voice{display:flex!important;align-items:center!important;gap:10px!important;height:48px!important;min-height:48px!important;flex:0 0 48px!important;border:1px solid #e4ddcf!important;border-radius:25px!important;background:#fffcf6!important;box-shadow:0 2px 8px #75694e14!important;padding:5px 12px!important;color:#36563f!important}
+#home>.voice .voice-mic{flex:0 0 35px;height:35px;display:grid;place-items:center;background:#e6eee3;border-radius:50%;font-size:18px!important}
+#home>.voice span:not(.voice-mic){flex:1;min-width:0;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#home>.voice b{font-size:17px;font-weight:500;color:#7c9980}
+.voice-progress{width:min(91vw,390px);padding:18px;border-radius:22px;background:#fffcf6;border:1px solid #e7e0d4}
+.voice-progress .dialoghead h2{font-size:19px;margin:0}
+.voice-progress .dialoghead .close{font-size:25px;line-height:1;width:36px;height:36px}
+.voice-live-status{display:flex;align-items:center;gap:9px;margin:16px 0 10px}
+.voice-status-dot{width:10px;height:10px;border-radius:50%;background:#b8b7a9;flex:none}
+.voice-progress.is-listening .voice-status-dot{background:#568767;box-shadow:0 0 0 4px #dfece1;animation:voicePulse 1.3s infinite}
+#voiceProgressText{font-size:15px;text-align:left;margin:0;color:#36533d;font-weight:750}
+#voiceTranscript{min-height:54px;max-height:112px;overflow:auto;padding:12px;margin:0 0 14px;text-align:left;background:#f5f4ed;border-radius:12px;color:#5b6258;font-size:14px;line-height:1.5}
+.voice-controls{display:grid;grid-template-columns:1fr 1.55fr;gap:9px}
+.voice-controls button{height:47px;border-radius:13px;font-size:15px;font-weight:750}
+.voice-cancel{background:#fff;border:1px solid #dedbd1;color:#6c706a}
+.voice-finish{background:#365f43;border:0;color:white}
+.voice-finish:disabled{opacity:.43}
+@keyframes voicePulse{50%{box-shadow:0 0 0 7px #dfece180}}
