@@ -358,3 +358,51 @@ main{padding:8px 14px 12px!important}
 #calendar .day.selected{background:#eaf0e6!important;border-color:#7c9b7c!important}
 #calendar .section-head h2,#all .all-top h2{color:#365c42}
 @media(max-height:720px){#today-events .premium-date-card{padding:6px 9px 8px}#today-events .detail-shell>h2{margin-bottom:6px!important}#calendar .day{height:55px!important;min-height:55px!important;max-height:55px!important}}
+
+/* v0.9.5.2 — agreed final UI refinements; do not modify hero/settings */
+:root{--event:#365c42;--task:#b9837b;--task-soft:#f7e9e5;--page-gap:8px}
+/* consistent page top alignment */
+#calendar.page.active,#all.page.active,#today-events.page.active{padding-top:3px!important}
+#all .all-top{margin-top:0!important}
+#today-events .detail-shell>h2{margin-top:0!important}
+/* exact same bottom clearance for pinned action controls */
+#calendar>.wide.add-event{margin-bottom:8px!important;margin-top:8px!important}
+#all .all-action-bar{padding-bottom:8px!important;padding-top:8px!important}
+#today-events .detail-shell{padding-bottom:8px!important}
+#today-events #detailAddEvent,#today-events #detailAddTask{margin-top:8px!important;margin-bottom:0!important}
+/* compact date navigation; selected tab keeps semantic color */
+#today-events .premium-date-card{padding:8px 11px 9px!important;margin-bottom:9px!important}
+#today-events .premium-date-card .detail-date-nav{margin-bottom:5px!important}
+#today-events .premium-date-card .detail-date-nav .detail-date-open{height:47px!important;min-height:47px!important}
+#today-events .premium-date-card .detail-tab{color:#4b6b54!important;background:#edf1ea!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="tasks"]{color:#9e665f!important;background:var(--task-soft)!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="events"].active{background:var(--event)!important;color:white!important}
+#today-events .premium-date-card .detail-tab[data-detail-kind="tasks"].active{background:var(--task)!important;color:white!important}
+#today-events #detailAddTask{background:var(--task)!important}
+#today-events .detail-list-scroll .taskline input{accent-color:var(--task)!important}
+/* independent all-page filters, 12px gap, meaningful active state */
+#all .filter{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;background:transparent!important;padding:0!important;margin:12px 0!important}
+#all .filter-btn{min-width:0!important;border:1px solid #dce5d9!important;background:#fffefa!important;color:var(--event)!important;border-radius:13px!important;box-shadow:0 2px 6px #544c350d!important}
+#all .filter-btn[data-filter="task"]{color:#9e665f!important;border-color:#ead4cf!important}
+#all .filter-btn.selected{background:var(--event)!important;color:white!important;border-color:var(--event)!important;box-shadow:none!important}
+#all .filter-btn[data-filter="task"].selected{background:var(--task)!important;color:white!important;border-color:var(--task)!important}
+#all .all-entry.is-task .all-entry-check,.taskline input{accent-color:var(--task)!important}
+#all .all-entry.is-task .all-entry-edit{color:#a86d65!important;background:var(--task-soft)!important}
+#all .task-type{color:#a86d65!important}
+/* fixed identical calendar cells, two single-line titles plus remainder count */
+#calendar .section-head{padding-top:0!important}
+#calendar .weekdays{margin-top:6px!important;margin-bottom:5px!important}
+#calendar .calendar-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;grid-auto-rows:82px!important;gap:4px!important;padding:2px 1px 5px!important;align-content:start!important}
+#calendar .day{width:100%!important;height:82px!important;min-height:82px!important;max-height:82px!important;min-width:0!important;padding:4px 2px!important;gap:1px!important;overflow:hidden!important;box-sizing:border-box!important}
+#calendar .daynum{font-size:17px!important;font-weight:850!important;line-height:19px!important;flex:none!important}
+#calendar .lunarday{font-size:9px!important;line-height:11px!important;flex:none!important}
+#calendar .day-event-slots{display:flex;flex-direction:column;gap:1px;width:100%;min-width:0;flex:1;overflow:hidden;align-items:stretch}
+#calendar .day .eventname{display:flex!important;align-items:center!important;gap:2px!important;width:100%!important;min-width:0!important;max-width:100%!important;height:12px!important;min-height:12px!important;max-height:12px!important;flex:0 0 12px!important;font-size:9px!important;line-height:12px!important;white-space:nowrap!important;overflow:hidden!important;word-break:normal!important}
+#calendar .event-label{display:block;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
+#calendar .kind-dot{width:4px;height:4px;border-radius:50%;background:var(--event);flex:0 0 4px}
+#calendar .task-event .kind-dot{background:var(--task)}
+#calendar .task-event .event-label{color:#a76c64!important}
+#calendar .schedule-event .event-label{color:#416e4c!important}
+#calendar .day .moreday{display:block!important;flex:0 0 11px!important;height:11px!important;line-height:11px!important;font-size:9px!important;color:#aa7169!important;white-space:nowrap!important}
+#calendar .calendar-grid{overscroll-behavior:contain!important}
+/* preserve navigation layout and original home design */

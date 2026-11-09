@@ -24,7 +24,7 @@ const detailTasks=data.tasks.filter(t=>t.date===detailDate);
 $('todayEventsFull').innerHTML=detailEvents.length?detailEvents.map(eventLine).join(''):'<p class="empty">선택한 날짜에 등록된 일정이 없어.</p>';
 $('todayTasksFull').innerHTML=detailTasks.length?detailTasks.map(taskLine).join(''):'<p class="empty">선택한 날짜에 할 일이 없어.</p>';
 const dd=parse(detailDate);
-$('detailDateText').textContent=dd.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+$('detailDateText').textContent=format(dd);
 $('detailLunarText').textContent=lunar(dd);
 $('detailShortDate').textContent=detailKind==='events'?'시간순':'등록순';
 $('detailListHeading').textContent=detailKind==='events'?`일정 ${detailEvents.length}건`:`할 일 ${detailTasks.length}건`;
@@ -41,8 +41,8 @@ function renderCalendar(){
  for(let i=0;i<first;i++)html+='<span class="day blank" aria-hidden="true"></span>';
  for(let i=1;i<=days;i++){
   const d=dateKey(new Date(year,month,i)),items=dayItems(d),n=items.length,wd=(first+i-1)%7,ld=lunarParts(new Date(year,month,i));
-  const title=items[0]?.title||'';const second=items[1]?.title||'';
-  html+=`<button type="button" class="day ${d===selected?'selected ':''}${n?'has ':''}${wd===0?'sun':wd===6?'sat':''}" data-date="${d}" aria-label="${i}일 ${n}개 일정 확인"><span class="daynum">${i}</span><span class="lunarday">${esc(ld)}</span>${n?`<span class="eventname" title="${esc(title)}">${esc(title)}</span>`:''}${n===2?`<span class="eventname" title="${esc(second)}">${esc(second)}</span>`:''}${n>2?`<span class="moreday">+${n-1}개</span>`:''}</button>`;
+  const rows=items.slice(0,2).map(x=>`<span class="eventname ${x.kind==='task'?'task-event':'schedule-event'}" title="${esc(x.title)}"><span class="kind-dot" aria-hidden="true"></span><span class="event-label">${esc(x.title)}</span></span>`).join('');
+  html+=`<button type="button" class="day ${d===selected?'selected ':''}${n?'has ':''}${wd===0?'sun':wd===6?'sat':''}" data-date="${d}" aria-label="${i}일 ${n}개 항목 확인"><span class="daynum">${i}</span><span class="lunarday">${esc(ld)}</span><span class="day-event-slots">${rows}${n>2?`<span class="moreday">+${n-2}개</span>`:''}</span></button>`;
  }
  $('calendarGrid').innerHTML=html;
 }
