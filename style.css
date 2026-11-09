@@ -516,3 +516,10 @@ main{padding:8px 14px 12px!important}
 .voice-finish{background:#365f43;border:0;color:white}
 .voice-finish:disabled{opacity:.43}
 @keyframes voicePulse{50%{box-shadow:0 0 0 7px #dfece180}}
+
+/* v0.9.5.8: manual completion and paused recognition fallback */
+.voice-controls{grid-template-columns:1fr 1.35fr!important;flex-wrap:wrap}
+.voice-controls:has(.voice-resume:not([hidden])){grid-template-columns:1fr 1fr!important}
+.voice-resume{grid-column:1 / -1;background:#e4eee4;border:1px solid #9bb6a0;color:#31593d}
+.voice-resume[hidden]{display:none!important}
+#voiceTranscript{max-height:30vh;overflow-y:auto;white-space:pre-wrap;overflow-wrap:anywhere}

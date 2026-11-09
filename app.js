@@ -94,37 +94,72 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
  function unlockVoiceAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;voiceAudio=voiceAudio||new C();if(voiceAudio.state==='suspended')voiceAudio.resume().catch(()=>{})}catch{}}
  function playVoiceTone(kind){if(voiceMode.value==='silent')return;try{unlockVoiceAudio();const c=voiceAudio;if(!c)return;const notes=kind==='start'?[880,1175]:kind==='end'?[1175,784]:[880];notes.forEach((hz,i)=>{const t=c.currentTime+.015+i*.19,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=hz;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.42,t+.025);g.gain.setValueAtTime(.42,t+.115);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.185)})}catch{}}
  function parseVoice(s){let text=s.trim(),date=today,time='10:00',place='';const now=new Date();let dateFound=false,timeFound=false;
- const relative=text.match(/(모레|내일|오늘)/);if(relative){const d=new Date(now);d.setDate(d.getDate()+(relative[1]==='모레'?2:relative[1]==='내일'?1:0));date=dateKey(d);dateFound=true}
+ const relative=text.match(/(내일\s*모레|모레|내일|오늘)/);if(relative){const d=new Date(now);d.setDate(d.getDate()+(/모레/.test(relative[1])?2:relative[1]==='내일'?1:0));date=dateKey(d);dateFound=true}
  const dm=text.match(/(?:(\d{4})년\s*)?(\d{1,2})월\s*(\d{1,2})일?/);if(dm){let y=dm[1]?Number(dm[1]):now.getFullYear(),m=Number(dm[2]),d=Number(dm[3]);if(!dm[1]&&new Date(y,m-1,d)<new Date(now.getFullYear(),now.getMonth(),now.getDate()))y++;if(m>=1&&m<=12&&d>=1&&d<=new Date(y,m,0).getDate()){date=dateKey(new Date(y,m-1,d));dateFound=true}}
  const weekday=text.match(/(이번\s*주|다음\s*주)?\s*(월|화|수|목|금|토|일)요일/);if(!dm&&!relative&&weekday){const wd={'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6}[weekday[2]],d=new Date(now);let shift=(wd-now.getDay()+7)%7;if(weekday[1]?.replace(/\s/g,'')==='다음주')shift+=shift===0?7:7;else if(shift===0)shift=7;d.setDate(d.getDate()+shift);date=dateKey(d);dateFound=true}
  const nums={'열두':12,'열한':11,'열':10,'아홉':9,'여덟':8,'일곱':7,'여섯':6,'다섯':5,'네':4,'넷':4,'세':3,'셋':3,'두':2,'둘':2,'한':1,'하나':1};
  const tm=text.match(/(오전|오후|아침|저녁|밤)?\s*(\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*(\d{1,2})\s*분|\s*반)?/);
  if(tm){let h=/^\d+$/.test(tm[2])?Number(tm[2]):nums[tm[2]],min=tm[0].includes('반')?30:Number(tm[3]||0);if(['오후','저녁','밤'].includes(tm[1])&&h<12)h+=12;if(['오전','아침'].includes(tm[1])&&h===12)h=0;if(h<24&&min<60){time=`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`;timeFound=true}}
- text=text.replace(/(?:(\d{4})년\s*)?\d{1,2}월\s*\d{1,2}일?/g,'').replace(/(이번\s*주|다음\s*주)?\s*[월화수목금토일]요일/g,'').replace(/(오전|오후|아침|저녁|밤)?\s*(?:\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*\d{1,2}\s*분|\s*반)?/g,'').replace(/오늘|내일|모레/g,'');
+ text=text.replace(/(?:(\d{4})년\s*)?\d{1,2}월\s*\d{1,2}일?/g,'').replace(/(이번\s*주|다음\s*주)?\s*[월화수목금토일]요일/g,'').replace(/(오전|오후|아침|저녁|밤)?\s*(?:\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*\d{1,2}\s*분|\s*반)?/g,'').replace(/내일\s*모레|오늘|내일|모레/g,'');
  const loc=text.match(/(?:^|\s)([^,]+?)\s*에서(?=\s|$)/);if(loc){place=loc[1].trim();text=text.replace(loc[0],' ')}
  text=text.replace(/(?:일정|할\s*일)(?:으로)?\s*(?:추가|등록)(?:해\s*줘|해주세요|해줘)?/g,'').replace(/(?:추가|등록)(?:해\s*줘|해주세요|해줘)?$/g,'').replace(/\s*(?:있어|있어요|할\s*거야|할\s*거예요|예정이야|예정입니다)\s*$/,'').replace(/^(에|은|는|을|를)\s*/,'').replace(/\s+/g,' ').trim();
  if(place){const key=place.replace(/\s+/g,'').toLowerCase();place=learned.places[key]||place}
  const title=learned.titles[text]||text||s.trim();return {title,date,time,place,dateFound,timeFound}}
  function classifyVoice(s){const task=/(할\s*일|해야\s*할|체크리스트|투두|todo|장보기|구매할|사야\s*할|챙기기)/i.test(s),event=/(일정|예약|약속|회의|수업|미팅|방문|진료|운동\s*수업|라운딩|골프)/i.test(s);return task&&!event?'task':event&&!task?'event':null}
- let voiceBusy=false,voiceDraft=null,pendingVoice=null,voiceSavePending=false,recognition=null,voiceCancelled=false,voiceText='',voiceHadResult=false,voiceCompleted=false;
- const voiceProgress=$('voiceProgressDialog');function voiceStep(stage,message,spoken=''){voiceProgress.classList.toggle('is-listening',stage==='listen');$('voiceProgressText').textContent=message;$('voiceTranscript').textContent=spoken||'말씀하신 내용이 여기에 표시돼요.'}
+ let voiceBusy=false,voiceDraft=null,pendingVoice=null,voiceSavePending=false;
+ const voiceProgress=$('voiceProgressDialog');
+ let voiceSession=null;
+ function voiceStep(stage,message,spoken=''){
+  voiceProgress.classList.toggle('is-listening',stage==='listen');
+  $('voiceProgressText').textContent=message;
+  $('voiceTranscript').textContent=spoken||'말씀하신 내용이 여기에 표시돼요.';
+ }
  function voiceDone(){if(!voiceSavePending)return;voiceSavePending=false;voiceDraft=null;playVoiceTone('end')}
- function resetVoice(){voiceBusy=false;recognition=null;$('voice').classList.remove('listening')}
- function cancelVoice(){voiceCancelled=true;voiceCompleted=true;voiceSavePending=false;voiceDraft=null;pendingVoice=null;try{recognition?.abort()}catch{}resetVoice();if(voiceProgress.open)voiceProgress.close()}
+ function voiceTextOf(s){return [s.finalText,s.interimText].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()}
+ function updateVoice(s,message){voiceStep(s.listening?'listen':'prepare',message,voiceTextOf(s));$('voiceFinish').disabled=!voiceTextOf(s)}
+ function releaseRecognition(s){const r=s.recognition;s.recognition=null;s.listening=false;if(r){r.onstart=null;r.onresult=null;r.onerror=null;r.onend=null;try{r.abort()}catch{}}}
+ function stopVoiceSession(s){if(!s||s.stopped)return;s.stopped=true;clearTimeout(s.retryTimer);clearTimeout(s.finishTimer);releaseRecognition(s);if(voiceSession===s)voiceSession=null;voiceBusy=false;$('voice').classList.remove('listening')}
+ function cancelVoice(){const s=voiceSession;stopVoiceSession(s);voiceSavePending=false;voiceDraft=null;pendingVoice=null;if(voiceProgress.open)voiceProgress.close()}
  $('voiceCancel').onclick=cancelVoice;$('voiceProgressClose').onclick=cancelVoice;
  voiceProgress.addEventListener('cancel',e=>{e.preventDefault();cancelVoice()});
  function fillVoice(type,parsed){voiceSavePending=true;voiceDraft={...parsed};if(voiceProgress.open)voiceProgress.close();openDialog(type);const f=$(type==='event'?'eventForm':'taskForm').elements;f.namedItem('title').value=parsed.title;f.date.value=parsed.date;if(type==='event'){f.time.value=parsed.time;f.place.value=parsed.place||''}}
  $('voiceChooseEvent').onclick=()=>{if(!pendingVoice)return;$('voiceChoiceDialog').close();fillVoice('event',pendingVoice);pendingVoice=null};
  $('voiceChooseTask').onclick=()=>{if(!pendingVoice)return;$('voiceChoiceDialog').close();fillVoice('task',pendingVoice);pendingVoice=null};
- function finishVoice(){if(!voiceBusy||voiceCompleted)return;voiceCompleted=true;$('voiceFinish').disabled=true;voiceStep('parse','인식 결과를 확인하고 있어요…',voiceText);try{recognition?.stop()}catch{processVoice()}}
+ function processVoice(s){if(voiceSession!==s||s.stopped)return;const spoken=voiceTextOf(s);stopVoiceSession(s);if(voiceProgress.open)voiceProgress.close();if(spoken.length<3){alert('인식된 문장이 없어. 다시 시도해 줘.');return}playVoiceTone('end');const parsed=parseVoice(spoken),kind=classifyVoice(spoken);if(kind)fillVoice(kind,parsed);else{pendingVoice=parsed;$('voiceChoiceText').textContent=spoken;$('voiceChoiceDialog').showModal()}}
+ function voicePause(s,message){if(voiceSession!==s||s.stopped||s.finishing)return;updateVoice(s,message||'잠시 멈췄어. 이어서 말하기를 눌러 줘.');$('voiceResume').hidden=false}
+ function startVoiceCycle(s){
+  if(voiceSession!==s||s.stopped||s.finishing)return;
+  clearTimeout(s.retryTimer);$('voiceResume').hidden=true;
+  const r=new s.SR();s.recognition=r;s.interimText='';s.listening=false;
+  r.lang='ko-KR';r.interimResults=true;r.continuous=true;r.maxAlternatives=1;
+  r.onstart=()=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;s.listening=true;s.failures=0;$('voice').classList.add('listening');updateVoice(s,'듣고 있어요 · 다 말씀하시면 완료를 눌러 줘');if(!s.hasStarted){s.hasStarted=true;playVoiceTone('start')}};
+  r.onresult=e=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;let final='',interim='';for(let i=0;i<e.results.length;i++){const v=e.results[i][0]?.transcript||'';if(e.results[i].isFinal)final+=v+' ';else interim+=v+' '}
+   // Each recognition cycle has its own result list; preserve earlier cycles.
+   s.cycleFinal=final.trim();s.interimText=interim.trim();updateVoice(s,'듣고 있어요 · 다 말씀하시면 완료를 눌러 줘')};
+  r.onerror=e=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;s.lastError=e.error||'unknown'};
+  r.onend=()=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;
+   const fragment=[s.cycleFinal,s.interimText].filter(Boolean).join(' ').trim();if(fragment)s.finalText=[s.finalText,fragment].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText='';s.recognition=null;s.listening=false;$('voice').classList.remove('listening');
+   if(s.finishing){processVoice(s);return}
+   const err=s.lastError;s.lastError=null;
+   if(['not-allowed','service-not-allowed','audio-capture'].includes(err)){voicePause(s,'마이크 접근이 중단됐어. 권한을 확인해 줘.');return}
+   if(err==='network'){voicePause(s,'음성 인식 연결이 끊겼어. 이어서 말하기를 눌러 줘.');return}
+   if(s.failures>=2){voicePause(s,'자동 재연결이 어려워. 이어서 말하기를 눌러 줘.');return}
+   s.failures++;updateVoice(s,'잠시 멈췄어 · 다시 듣는 중…');
+   s.retryTimer=setTimeout(()=>startVoiceCycle(s),450);
+  };
+  try{r.start()}catch(e){s.recognition=null;s.listening=false;s.failures++;if(s.failures<3){s.retryTimer=setTimeout(()=>startVoiceCycle(s),700)}else voicePause(s,'마이크를 다시 시작하지 못했어. 이어서 말하기를 눌러 줘.')}
+ }
+ function finishVoice(){const s=voiceSession;if(!s||s.stopped||s.finishing)return;s.finishing=true;clearTimeout(s.retryTimer);$('voiceResume').hidden=true;$('voiceFinish').disabled=true;voiceStep('prepare','말씀하신 내용을 정리 중…',voiceTextOf(s));
+  if(!s.recognition){processVoice(s);return}
+  try{s.recognition.stop()}catch{processVoice(s)}
+  s.finishTimer=setTimeout(()=>{if(voiceSession===s&&!s.stopped)processVoice(s)},1600);
+ }
  $('voiceFinish').onclick=finishVoice;
- function processVoice(){if(voiceCancelled)return;const spoken=voiceText.trim();resetVoice();if(voiceProgress.open)voiceProgress.close();if(!spoken||spoken.length<3){alert('말소리가 인식되지 않았어. 시작 안내가 나온 뒤 또렷하게 말해 줘.');return}playVoiceTone('end');const parsed=parseVoice(spoken),kind=classifyVoice(spoken);if(kind)fillVoice(kind,parsed);else{pendingVoice=parsed;$('voiceChoiceText').textContent=spoken;$('voiceChoiceDialog').showModal()}}
- $('voice').onclick=()=>{if(voiceBusy)return;unlockVoiceAudio();const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('이 브라우저에서는 음성 인식을 지원하지 않아.');return}voiceBusy=true;voiceCancelled=false;voiceCompleted=false;voiceHadResult=false;voiceText='';$('voiceFinish').disabled=true;voiceStep('prepare','마이크 준비 중…','시작음이 들리고 화면에 ‘지금 말씀하세요’가 뜨면 말해 줘.');voiceProgress.showModal();const r=new SR();recognition=r;r.lang='ko-KR';r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
- r.onstart=()=>{if(voiceCancelled)return;voiceStep('listen','지금 말씀하세요',voiceText);$('voiceFinish').disabled=false;$('voice').classList.add('listening');playVoiceTone('start')};
- r.onresult=e=>{if(voiceCancelled)return;let result='';for(let i=0;i<e.results.length;i++)result+=e.results[i][0].transcript+' ';voiceText=result.trim();voiceHadResult=!!voiceText;voiceStep('listen','듣고 있어요',voiceText)};
- r.onerror=e=>{if(voiceCancelled)return;const err=e.error||'unknown';if(err==='no-speech'){voiceStep('prepare','말소리를 듣지 못했어.','마이크 버튼을 다시 눌러 천천히 말씀해 줘.');return}voiceCancelled=true;resetVoice();if(voiceProgress.open)voiceProgress.close();const help=err==='not-allowed'||err==='service-not-allowed'?'아이폰 설정에서 Safari의 마이크 권한을 확인해 줘.':err==='network'?'음성 인식 서비스에 연결하지 못했어. 인터넷 연결을 확인해 줘.':err==='audio-capture'?'마이크를 사용할 수 없어. 다른 앱의 마이크 사용 여부를 확인해 줘.':'다시 시도해 줘.';alert('음성 인식 오류 ('+err+')\n'+help)};
- r.onend=()=>{if(voiceCancelled)return;voiceCompleted=true;processVoice()};
- try{r.start()}catch(err){cancelVoice();alert('마이크 시작 실패: '+(err?.message||'다시 시도해 줘.'))}};
+ $('voiceResume').onclick=()=>{const s=voiceSession;if(!s||s.stopped||s.finishing)return;clearTimeout(s.retryTimer);if(s.recognition){try{s.recognition.abort()}catch{}return} s.failures=0;startVoiceCycle(s)};
+ $('voice').onclick=()=>{if(voiceBusy)return;unlockVoiceAudio();const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('이 브라우저에서는 음성 인식을 지원하지 않아.');return}
+  voiceBusy=true;const s={SR,finalText:'',cycleFinal:'',interimText:'',recognition:null,stopped:false,finishing:false,listening:false,failures:0,lastError:null,hasStarted:false,retryTimer:null,finishTimer:null};voiceSession=s;
+  $('voiceResume').hidden=true;$('voiceFinish').disabled=true;voiceStep('prepare','마이크 준비 중…','말씀을 천천히 이어서 해 줘. 다 말하면 완료를 눌러 줘.');voiceProgress.showModal();startVoiceCycle(s)
+ };
 $('export').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='haru-test-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};$('importButton').onclick=()=>$('importFile').click();
 $('importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{if(file.size>5*1024*1024)throw Error('파일 크기가 너무 커.');const imported=JSON.parse(await file.text());if(!imported||!Array.isArray(imported.events)||!Array.isArray(imported.tasks))throw Error('하루 백업 파일 형식이 아니야.');const valid=a=>a.every(x=>x&&typeof x==='object'&&typeof x.title==='string'&&typeof x.date==='string'&&/^\\d{4}-\\d{2}-\\d{2}$/.test(x.date)&&typeof x.id==='string');if(!valid(imported.events)||!valid(imported.tasks))throw Error('백업 데이터에 오류가 있어.');if(!confirm(`백업에서 일정 ${imported.events.length}개, 할 일 ${imported.tasks.length}개를 복원할까?\\n현재 저장된 데이터는 교체되지만 복원 전 자동 백업 파일을 내려받아.`))return;const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='haru-before-restore-'+dateKey(new Date())+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);data={events:imported.events,tasks:imported.tasks};save();refresh();alert('복원 완료! 일정과 할 일을 확인해 줘.')}catch(err){alert('복원하지 못했어: '+err.message)}finally{e.target.value=''}};
 header();refresh();showPage('home')})();
