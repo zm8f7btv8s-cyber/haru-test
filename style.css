@@ -535,3 +535,9 @@ main{padding:8px 14px 12px!important}
 #calendar .calendar-scroll-host>.calendar-grid::-webkit-scrollbar{display:none!important}
 #calendar .calendar-scroll-host>.haru-scroll-rail{right:1px!important;top:4px!important;bottom:4px!important;width:9px!important;background:#e5ece1!important;border-radius:99px!important}
 #calendar .calendar-scroll-host .haru-scroll-thumb{background:#6d956e!important;border-radius:99px!important}
+
+/* Haru 1.2: hide hero settings entirely and remove old decorative fragments */
+.hero-settings{display:none!important}
+.nav .nav-settings-icon{display:grid!important;place-items:center!important;width:25px!important;height:25px!important;border-radius:0!important;background:transparent!important;color:#345b43!important;box-shadow:none!important;border:0!important;overflow:visible!important;font-style:normal!important}
+.nav .nav-settings-icon svg{display:block!important;width:23px!important;height:23px!important;overflow:visible!important}
+.nav button[data-page="settings"]::before,.nav button[data-page="settings"]::after,.nav .nav-settings-icon::before,.nav .nav-settings-icon::after{content:none!important;display:none!important}

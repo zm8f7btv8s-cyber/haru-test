@@ -23,14 +23,20 @@ function parse(input, options={}){
  if(!timeFound&&/(점심|저녁|아침|오후|오전|밤)\s*(?:에|쯤|경)?/.test(text))ambiguous.push('시간을 확인해 주세요');
  // Don't infer locations without explicit marker; avoid swallowing long sentence.
  consume(/(?:^|\s)([가-힣A-Za-z0-9 ]{2,24}?)\s*에서(?=\s|$)/,m=>{place=m[1].trim();return !!place});
+ text=text.replace(/^(?:에|에는|에선|까지|부터)\s*/, '');
  text=text.replace(/(?:일정|할\s*일)(?:으로)?\s*(?:추가|등록)(?:해\s*줘|해주세요|해줘)?/g,' ')
  .replace(/(?:추가|등록|기록)(?:해\s*줘|해주세요|해줘)?\s*$/g,' ')
- .replace(/\s*(?:있어|있어요|있습니다|할\s*거야|할\s*거예요|예정이야|예정입니다|잡아\s*줘|기억해\s*줘|알려\s*줘)\s*$/,' ')
+ .replace(/\s*(?:있어|있어요|있습니다|있다|있는데|잡혀\s*있어|예약했어|예약했어요|예약해\s*뒀어|해야\s*해|해야\s*돼|해야겠어|할\s*거야|할\s*거예요|예정이야|예정입니다|잡아\s*줘|기억해\s*줘|알려\s*줘|등록해\s*줘|추가해\s*줘)[.!?\s]*$/,' ')
  .replace(/^(?:에|에는|에서|은|는|을|를)\s+/,' ')
  .replace(/\s+(?:에|에는|부터|쯤|경)(?=\s|$)/g,' ')
  .replace(/\s+/g,' ').trim();
  // Only remove standalone, grammatically clear particles; never guess away content.
- text=text.replace(/(수업|회의|약속|예약|운동|진료|모임|방문)(이|가)(?=\s*$)/,'$1').trim();
+ // Korean subject particles attached to the event phrase: remove only when a spoken predicate was removed.
+ if (/(?:있어|있어요|있습니다|있다|있는데|잡혀\s*있어|예약했어|예약했어요|해야\s*해|해야\s*돼|예정이야)[.!?\s]*$/.test(original)) {
+   text=text.replace(/(수업|회의|약속|예약|운동|진료|모임|방문|점검|상담|검사|검진|면접|식사|점심|저녁|미팅|라운딩|골프|발표|교육|강의|행사|모임|수리|청소|납부|입금|쇼핑|장보기)(이|가)$/, '$1').trim();
+ }
+ // A dangling postposition is often left after removing a time phrase: '오 에 PT 수업이'.
+ text=text.replace(/^(?:오|에|에는|에서|이|가)\s+(?=[가-힣A-Za-z])/, '').trim();
  if(!dateFound)ambiguous.push('날짜를 확인해 주세요');
  if(!timeFound)ambiguous.push('시간을 확인해 주세요');
  const title=text||original;
