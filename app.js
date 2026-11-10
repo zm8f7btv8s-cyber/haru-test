@@ -94,35 +94,9 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
  function unlockVoiceAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;voiceAudio=voiceAudio||new C();if(voiceAudio.state==='suspended')voiceAudio.resume().catch(()=>{})}catch{}}
  function playVoiceTone(kind){if(voiceMode.value==='silent')return;try{unlockVoiceAudio();const c=voiceAudio;if(!c)return;const notes=kind==='start'?[880,1175]:kind==='end'?[1175,784]:[880];notes.forEach((hz,i)=>{const t=c.currentTime+.015+i*.19,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=hz;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.42,t+.025);g.gain.setValueAtTime(.42,t+.115);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.185)})}catch{}}
  function parseVoice(s){
- let text=String(s||'').replace(/\s+/g,' ').trim(),date=today,time='10:00',place='',dateFound=false,timeFound=false;
- const now=new Date(),base=new Date(now.getFullYear(),now.getMonth(),now.getDate());
- const setDate=d=>{date=dateKey(d);dateFound=true};
- const addDays=n=>{const d=new Date(base);d.setDate(d.getDate()+n);setDate(d)};
- const dm=text.match(/(?:(\d{4})년\s*)?(\d{1,2})월\s*(\d{1,2})일?/);
- if(dm){let y=dm[1]?+dm[1]:now.getFullYear(),m=+dm[2],d=+dm[3];if(m>=1&&m<=12&&d>=1&&d<=new Date(y,m,0).getDate()){let target=new Date(y,m-1,d);if(!dm[1]&&target<base)target=new Date(y+1,m-1,d);setDate(target);text=text.replace(dm[0],' ')}}
- else {
-  const rel=text.match(/그저께|어제|오늘|내일\s*모레|글피|모레|내일/);
-  if(rel){const offset={'그저께':-2,'어제':-1,'오늘':0,'내일':1,'모레':2,'글피':3,'내일모레':2}[rel[0].replace(/\s/g,'')];addDays(offset);text=text.replace(rel[0],' ')}
-  else {const wd=text.match(/(이번\s*주|다음\s*주|다다음\s*주|이번주|다음주|다다음주)?\s*([월화수목금토일])요일/);
-   if(wd){const n={'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6}[wd[2]],prefix=(wd[1]||'').replace(/\s/g,'');let delta;
-    if(prefix){const monday=(now.getDay()+6)%7;delta=-monday+((n+6)%7)+(prefix==='다다음주'?14:prefix==='다음주'?7:0)}
-    else {delta=(n-now.getDay()+7)%7;if(delta===0)delta=7}
-    addDays(delta);text=text.replace(wd[0],' ')}
-  }
- }
- const nums={'열두':12,'열한':11,'열':10,'아홉':9,'여덟':8,'일곱':7,'여섯':6,'다섯':5,'네':4,'넷':4,'세':3,'셋':3,'두':2,'둘':2,'한':1,'하나':1};
- const tm=text.match(/(오전|오후|아침|점심|저녁|밤|새벽)?\s*(\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*(\d{1,2})\s*분|\s*반)?/);
- if(tm){let h=/^\d+$/.test(tm[2])?+tm[2]:nums[tm[2]],minute=/반\s*$/.test(tm[0])?30:+(tm[3]||0);if(['오후','저녁','밤','점심'].includes(tm[1])&&h<12)h+=12;if(['오전','아침','새벽'].includes(tm[1])&&h===12)h=0;if(h<24&&minute<60){time=`${String(h).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;timeFound=true;text=text.replace(tm[0],' ')}}
- // Only a clear location marker is interpreted as a place. Leave ambiguous words in the title.
- const loc=text.match(/(?:^|\s)([^,]+?)\s*에서(?=\s|$)/);
- if(loc){place=loc[1].replace(/^(?:에|은|는|을|를)\s*/,'').trim();text=text.replace(loc[0],' ')}
- text=text.replace(/(?:일정|할\s*일)(?:으로)?\s*(?:추가|등록)(?:해\s*줘|해주세요|해줘)?/g,' ')
- .replace(/(?:추가|등록)(?:해\s*줘|해주세요|해줘)?\s*$/g,' ')
- .replace(/\s*(?:있어|있어요|있습니다|할\s*거야|할\s*거예요|예정이야|예정입니다|잡아\s*줘|기억해\s*줘|알려\s*줘)\s*$/,' ')
- .replace(/^(?:에|은|는|을|를|에\s*있는|에\s*할)\s*/,' ')
- .replace(/\s+(?:에|에는|부터|쯤|경)\s+/g,' ').replace(/\s+/g,' ').trim();
- if(place){const key=place.replace(/\s+/g,'').toLowerCase();place=learned.places[key]||place}
- const title=learned.titles[text]||text||s.trim();return {title,date,time,place,dateFound,timeFound}
+  const result=window.HaruVoiceEngine.parse(s);
+  const title=learned.titles[result.title]||result.title;
+  return {...result,title,place:learned.places[result.place.replace(/\s+/g,'').toLowerCase()]||result.place};
  }
  function classifyVoice(s){const task=/(할\s*일|해야\s*할|체크리스트|투두|todo|장보기|구매할|사야\s*할|챙기기)/i.test(s),event=/(일정|예약|약속|회의|수업|미팅|방문|진료|운동\s*수업|라운딩|골프)/i.test(s);return task&&!event?'task':event&&!task?'event':null}
  let voiceBusy=false,voiceDraft=null,pendingVoice=null,voiceSavePending=false;
