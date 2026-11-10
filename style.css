@@ -523,3 +523,15 @@ main{padding:8px 14px 12px!important}
 .voice-resume{grid-column:1 / -1;background:#e4eee4;border:1px solid #9bb6a0;color:#31593d}
 .voice-resume[hidden]{display:none!important}
 #voiceTranscript{max-height:30vh;overflow-y:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* Haru 1.1: soft circular settings icon, same premium scrollbar on calendar */
+.hero-settings{background:#e6ede3!important;color:#345c43!important;border:1px solid #d5e1d2!important;box-shadow:0 3px 10px #365c4320!important;display:grid!important;place-items:center!important}
+.hero-settings .settings-svg{width:24px;height:24px;display:block}
+.nav .nav-settings-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#e6ede3;color:#345c43;line-height:1}
+.nav .nav-settings-icon .settings-svg{width:21px;height:21px}
+#calendar.page.active{min-height:0!important}
+#calendar .calendar-scroll-host{min-height:0!important;flex:1 1 auto!important;display:flex!important;flex-direction:column!important;position:relative!important;margin-top:0!important;padding-right:13px!important}
+#calendar .calendar-scroll-host>.calendar-grid{min-height:0!important;flex:1 1 auto!important;overflow-y:auto!important;overflow-x:hidden!important;align-content:start!important;margin-top:0!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}
+#calendar .calendar-scroll-host>.calendar-grid::-webkit-scrollbar{display:none!important}
+#calendar .calendar-scroll-host>.haru-scroll-rail{right:1px!important;top:4px!important;bottom:4px!important;width:9px!important;background:#e5ece1!important;border-radius:99px!important}
+#calendar .calendar-scroll-host .haru-scroll-thumb{background:#6d956e!important;border-radius:99px!important}

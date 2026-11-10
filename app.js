@@ -93,18 +93,37 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
  let voiceAudio=null;
  function unlockVoiceAudio(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;voiceAudio=voiceAudio||new C();if(voiceAudio.state==='suspended')voiceAudio.resume().catch(()=>{})}catch{}}
  function playVoiceTone(kind){if(voiceMode.value==='silent')return;try{unlockVoiceAudio();const c=voiceAudio;if(!c)return;const notes=kind==='start'?[880,1175]:kind==='end'?[1175,784]:[880];notes.forEach((hz,i)=>{const t=c.currentTime+.015+i*.19,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=hz;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.42,t+.025);g.gain.setValueAtTime(.42,t+.115);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.185)})}catch{}}
- function parseVoice(s){let text=s.trim(),date=today,time='10:00',place='';const now=new Date();let dateFound=false,timeFound=false;
- const relative=text.match(/(내일\s*모레|모레|내일|오늘)/);if(relative){const d=new Date(now);d.setDate(d.getDate()+(/모레/.test(relative[1])?2:relative[1]==='내일'?1:0));date=dateKey(d);dateFound=true}
- const dm=text.match(/(?:(\d{4})년\s*)?(\d{1,2})월\s*(\d{1,2})일?/);if(dm){let y=dm[1]?Number(dm[1]):now.getFullYear(),m=Number(dm[2]),d=Number(dm[3]);if(!dm[1]&&new Date(y,m-1,d)<new Date(now.getFullYear(),now.getMonth(),now.getDate()))y++;if(m>=1&&m<=12&&d>=1&&d<=new Date(y,m,0).getDate()){date=dateKey(new Date(y,m-1,d));dateFound=true}}
- const weekday=text.match(/(이번\s*주|다음\s*주)?\s*(월|화|수|목|금|토|일)요일/);if(!dm&&!relative&&weekday){const wd={'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6}[weekday[2]],d=new Date(now);let shift=(wd-now.getDay()+7)%7;if(weekday[1]?.replace(/\s/g,'')==='다음주')shift+=shift===0?7:7;else if(shift===0)shift=7;d.setDate(d.getDate()+shift);date=dateKey(d);dateFound=true}
+ function parseVoice(s){
+ let text=String(s||'').replace(/\s+/g,' ').trim(),date=today,time='10:00',place='',dateFound=false,timeFound=false;
+ const now=new Date(),base=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+ const setDate=d=>{date=dateKey(d);dateFound=true};
+ const addDays=n=>{const d=new Date(base);d.setDate(d.getDate()+n);setDate(d)};
+ const dm=text.match(/(?:(\d{4})년\s*)?(\d{1,2})월\s*(\d{1,2})일?/);
+ if(dm){let y=dm[1]?+dm[1]:now.getFullYear(),m=+dm[2],d=+dm[3];if(m>=1&&m<=12&&d>=1&&d<=new Date(y,m,0).getDate()){let target=new Date(y,m-1,d);if(!dm[1]&&target<base)target=new Date(y+1,m-1,d);setDate(target);text=text.replace(dm[0],' ')}}
+ else {
+  const rel=text.match(/그저께|어제|오늘|내일\s*모레|글피|모레|내일/);
+  if(rel){const offset={'그저께':-2,'어제':-1,'오늘':0,'내일':1,'모레':2,'글피':3,'내일모레':2}[rel[0].replace(/\s/g,'')];addDays(offset);text=text.replace(rel[0],' ')}
+  else {const wd=text.match(/(이번\s*주|다음\s*주|다다음\s*주|이번주|다음주|다다음주)?\s*([월화수목금토일])요일/);
+   if(wd){const n={'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6}[wd[2]],prefix=(wd[1]||'').replace(/\s/g,'');let delta;
+    if(prefix){const monday=(now.getDay()+6)%7;delta=-monday+((n+6)%7)+(prefix==='다다음주'?14:prefix==='다음주'?7:0)}
+    else {delta=(n-now.getDay()+7)%7;if(delta===0)delta=7}
+    addDays(delta);text=text.replace(wd[0],' ')}
+  }
+ }
  const nums={'열두':12,'열한':11,'열':10,'아홉':9,'여덟':8,'일곱':7,'여섯':6,'다섯':5,'네':4,'넷':4,'세':3,'셋':3,'두':2,'둘':2,'한':1,'하나':1};
- const tm=text.match(/(오전|오후|아침|저녁|밤)?\s*(\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*(\d{1,2})\s*분|\s*반)?/);
- if(tm){let h=/^\d+$/.test(tm[2])?Number(tm[2]):nums[tm[2]],min=tm[0].includes('반')?30:Number(tm[3]||0);if(['오후','저녁','밤'].includes(tm[1])&&h<12)h+=12;if(['오전','아침'].includes(tm[1])&&h===12)h=0;if(h<24&&min<60){time=`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`;timeFound=true}}
- text=text.replace(/(?:(\d{4})년\s*)?\d{1,2}월\s*\d{1,2}일?/g,'').replace(/(이번\s*주|다음\s*주)?\s*[월화수목금토일]요일/g,'').replace(/(오전|오후|아침|저녁|밤)?\s*(?:\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*\d{1,2}\s*분|\s*반)?/g,'').replace(/내일\s*모레|오늘|내일|모레/g,'');
- const loc=text.match(/(?:^|\s)([^,]+?)\s*에서(?=\s|$)/);if(loc){place=loc[1].trim();text=text.replace(loc[0],' ')}
- text=text.replace(/(?:일정|할\s*일)(?:으로)?\s*(?:추가|등록)(?:해\s*줘|해주세요|해줘)?/g,'').replace(/(?:추가|등록)(?:해\s*줘|해주세요|해줘)?$/g,'').replace(/\s*(?:있어|있어요|할\s*거야|할\s*거예요|예정이야|예정입니다)\s*$/,'').replace(/^(에|은|는|을|를)\s*/,'').replace(/\s+/g,' ').trim();
+ const tm=text.match(/(오전|오후|아침|점심|저녁|밤|새벽)?\s*(\d{1,2}|열두|열한|열|아홉|여덟|일곱|여섯|다섯|네|넷|세|셋|두|둘|한|하나)\s*시(?:\s*(\d{1,2})\s*분|\s*반)?/);
+ if(tm){let h=/^\d+$/.test(tm[2])?+tm[2]:nums[tm[2]],minute=/반\s*$/.test(tm[0])?30:+(tm[3]||0);if(['오후','저녁','밤','점심'].includes(tm[1])&&h<12)h+=12;if(['오전','아침','새벽'].includes(tm[1])&&h===12)h=0;if(h<24&&minute<60){time=`${String(h).padStart(2,'0')}:${String(minute).padStart(2,'0')}`;timeFound=true;text=text.replace(tm[0],' ')}}
+ // Only a clear location marker is interpreted as a place. Leave ambiguous words in the title.
+ const loc=text.match(/(?:^|\s)([^,]+?)\s*에서(?=\s|$)/);
+ if(loc){place=loc[1].replace(/^(?:에|은|는|을|를)\s*/,'').trim();text=text.replace(loc[0],' ')}
+ text=text.replace(/(?:일정|할\s*일)(?:으로)?\s*(?:추가|등록)(?:해\s*줘|해주세요|해줘)?/g,' ')
+ .replace(/(?:추가|등록)(?:해\s*줘|해주세요|해줘)?\s*$/g,' ')
+ .replace(/\s*(?:있어|있어요|있습니다|할\s*거야|할\s*거예요|예정이야|예정입니다|잡아\s*줘|기억해\s*줘|알려\s*줘)\s*$/,' ')
+ .replace(/^(?:에|은|는|을|를|에\s*있는|에\s*할)\s*/,' ')
+ .replace(/\s+(?:에|에는|부터|쯤|경)\s+/g,' ').replace(/\s+/g,' ').trim();
  if(place){const key=place.replace(/\s+/g,'').toLowerCase();place=learned.places[key]||place}
- const title=learned.titles[text]||text||s.trim();return {title,date,time,place,dateFound,timeFound}}
+ const title=learned.titles[text]||text||s.trim();return {title,date,time,place,dateFound,timeFound}
+ }
  function classifyVoice(s){const task=/(할\s*일|해야\s*할|체크리스트|투두|todo|장보기|구매할|사야\s*할|챙기기)/i.test(s),event=/(일정|예약|약속|회의|수업|미팅|방문|진료|운동\s*수업|라운딩|골프)/i.test(s);return task&&!event?'task':event&&!task?'event':null}
  let voiceBusy=false,voiceDraft=null,pendingVoice=null,voiceSavePending=false;
  const voiceProgress=$('voiceProgressDialog');
@@ -138,7 +157,7 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
    s.cycleFinal=final.trim();s.interimText=interim.trim();updateVoice(s,'듣고 있어요 · 다 말씀하시면 완료를 눌러 줘')};
   r.onerror=e=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;s.lastError=e.error||'unknown'};
   r.onend=()=>{if(voiceSession!==s||s.recognition!==r||s.stopped)return;
-   const fragment=[s.cycleFinal,s.interimText].filter(Boolean).join(' ').trim();if(fragment)s.finalText=[s.finalText,fragment].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText='';s.recognition=null;s.listening=false;$('voice').classList.remove('listening');updateVoice(s,'잠시 쉬는 중 · 완료하거나 이어서 말해 줘');
+   const fragment=s.cycleFinal||s.interimText;if(fragment)s.finalText=[s.finalText,fragment].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText='';s.recognition=null;s.listening=false;$('voice').classList.remove('listening');updateVoice(s,'잠시 쉬는 중 · 완료하거나 이어서 말해 줘');
    if(s.finishing){processVoice(s);return}
    const err=s.lastError;s.lastError=null;
    if(['not-allowed','service-not-allowed','audio-capture'].includes(err)){voicePause(s,'마이크 접근이 중단됐어. 권한을 확인해 줘.');return}
@@ -152,7 +171,7 @@ $('prevMonth').onclick=()=>{month--;if(month<0){month=11;year--}renderCalendar()
  function finishVoice(){const s=voiceSession;if(!s||s.stopped||s.finishing)return;s.finishing=true;clearTimeout(s.retryTimer);$('voiceResume').hidden=true;$('voiceFinish').disabled=true;voiceStep('prepare','말씀하신 내용을 정리 중…',voiceTextOf(s));
   if(!s.recognition){processVoice(s);return}
   try{s.recognition.stop()}catch{processVoice(s)}
-  s.finishTimer=setTimeout(()=>{if(voiceSession===s&&!s.stopped){if(s.cycleFinal||s.interimText){s.finalText=[s.finalText,s.cycleFinal,s.interimText].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText=''}processVoice(s)}},1600);
+  s.finishTimer=setTimeout(()=>{if(voiceSession===s&&!s.stopped){if(s.cycleFinal||s.interimText){s.finalText=[s.finalText,s.cycleFinal||s.interimText].filter(Boolean).join(' ').trim();s.cycleFinal='';s.interimText=''}processVoice(s)}},1600);
  }
  $('voiceFinish').onclick=finishVoice;
  $('voiceResume').onclick=()=>{const s=voiceSession;if(!s||s.stopped||s.finishing)return;clearTimeout(s.retryTimer);if(s.recognition){try{s.recognition.abort()}catch{}return} s.failures=0;startVoiceCycle(s)};

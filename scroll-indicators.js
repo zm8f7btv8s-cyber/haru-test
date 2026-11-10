@@ -1,6 +1,6 @@
 /* Scroll position indicators, visual only. Does not change stored data or scrolling behavior. */
 (()=>{'use strict';
-const ids=['todayEvents','todayTasks','upcomingEvents','allScroll'];
+const ids=['todayEvents','todayTasks','upcomingEvents','allScroll','calendarGrid'];
 const getNodes=()=>[...ids.map(id=>document.getElementById(id)),document.querySelector('#today-events .detail-list-scroll')].filter(Boolean);
 function update(el){const host=el.closest('.haru-scroll-host');if(!host)return;const rail=host.querySelector('.haru-scroll-rail');const thumb=host.querySelector('.haru-scroll-thumb');if(!rail||!thumb)return;
 const total=el.scrollHeight,visible=el.clientHeight,max=Math.max(0,total-visible);
