@@ -21,6 +21,11 @@ function parse(input, options={}){
   consume(/(오전|오후|아침|점심|저녁|밤|새벽)?\s*(\d{1,2}|열두|열한|아홉|여덟|일곱|여섯|다섯|넷|네|셋|세|둘|두|하나|한|열)\s*시(?:\s*(\d{1,2})\s*분|\s*반)?/,m=>{let h=num(m[2]),min=/반\s*$/.test(m[0])?30:+(m[3]||0);if(['오후','점심','저녁','밤'].includes(m[1])&&h<12)h+=12;if(['오전','아침','새벽'].includes(m[1])&&h===12)h=0;if(h>23||min>59)return false;time=`${pad(h)}:${pad(min)}`;timeFound=true;return true});
  }
  if(!timeFound&&/(점심|저녁|아침|오후|오전|밤)\s*(?:에|쯤|경)?/.test(text))ambiguous.push('시간을 확인해 주세요');
+ // Separate spoken location clauses before cleaning the event title.
+ // Example: "병원은 충대병원이야", "장소는 시청 회의실이야".
+ consume(/(?:^|[.?!]\s*|\s+)(?:장소|병원|식당|위치|모임\s*장소)(?:은|는)\s+([가-힣A-Za-z0-9 ]{2,30}?)(?:이야|야|입니다|이에요|예요|라고\s*해|이래)?[.!?\s]*$/,m=>{place=m[1].trim();return !!place});
+ // A common conversational phrasing: "병원은 충대병원이야" after an earlier event clause.
+ if(!place)consume(/(?:^|\s)(?:병원|장소|식당|위치)(?:은|는)\s*([가-힣A-Za-z0-9 ]{2,25}?)(?:이야|야|이에요|예요|입니다)[.!?\s]*$/,m=>{place=m[1].trim();return !!place});
  // Don't infer locations without explicit marker; avoid swallowing long sentence.
  consume(/(?:^|\s)([가-힣A-Za-z0-9 ]{2,24}?)\s*에서(?=\s|$)/,m=>{place=m[1].trim();return !!place});
  text=text.replace(/^(?:에|에는|에선|까지|부터)\s*/, '');
@@ -29,7 +34,7 @@ function parse(input, options={}){
  .replace(/\s*(?:있어|있어요|있습니다|있다|있는데|잡혀\s*있어|예약했어|예약했어요|예약해\s*뒀어|해야\s*해|해야\s*돼|해야겠어|할\s*거야|할\s*거예요|예정이야|예정입니다|잡아\s*줘|기억해\s*줘|알려\s*줘|등록해\s*줘|추가해\s*줘)[.!?\s]*$/,' ')
  .replace(/^(?:에|에는|에서|은|는|을|를)\s+/,' ')
  .replace(/\s+(?:에|에는|부터|쯤|경)(?=\s|$)/g,' ')
- .replace(/\s+/g,' ').trim();
+ .replace(/[.!?]+/g,' ').replace(/\s+/g,' ').trim();
  // Only remove standalone, grammatically clear particles; never guess away content.
  // Korean subject particles attached to the event phrase: remove only when a spoken predicate was removed.
  if (/(?:있어|있어요|있습니다|있다|있는데|잡혀\s*있어|예약했어|예약했어요|해야\s*해|해야\s*돼|예정이야)[.!?\s]*$/.test(original)) {
@@ -39,6 +44,8 @@ function parse(input, options={}){
  text=text.replace(/^(?:오|에|에는|에서|이|가)\s+(?=[가-힣A-Za-z])/, '').trim();
  if(!dateFound)ambiguous.push('날짜를 확인해 주세요');
  if(!timeFound)ambiguous.push('시간을 확인해 주세요');
+ // Remove a subject particle from an event phrase only when it is a recognized predicate construction.
+ if(/(?:있어|있어요|있습니다|있다|있는데)[.!?\s]*(?:병원|장소|식당|위치)(?:은|는)/.test(original))text=text.replace(/(수업|회의|약속|예약|운동|진료|모임|방문|점검|상담|검사|검진|면접|식사|미팅|라운딩|교육|강의|행사)(이|가)(?=\s|$)/,'$1');
  const title=text||original;
  return {title,date,time:time||'10:00',place,dateFound,timeFound,needsReview:ambiguous.length>0,reviewReasons:[...new Set(ambiguous)],original};
 }
