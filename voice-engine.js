@@ -46,6 +46,18 @@ function parse(input, options={}){
  if(!timeFound)ambiguous.push('시간을 확인해 주세요');
  // Remove a subject particle from an event phrase only when it is a recognized predicate construction.
  if(/(?:있어|있어요|있습니다|있다|있는데)[.!?\s]*(?:병원|장소|식당|위치)(?:은|는)/.test(original))text=text.replace(/(수업|회의|약속|예약|운동|진료|모임|방문|점검|상담|검사|검진|면접|식사|미팅|라운딩|교육|강의|행사)(이|가)(?=\s|$)/,'$1');
+ // Remove conversational clauses left behind when the time expression was consumed.
+ // Example: '골프 라운딩이 있어 시간은 이야' -> '골프 라운딩'.
+ text=text.replace(/(?:^|\s)(?:시간|시각)(?:은|는|이|가)?\s*(?:이야|이에요|예요|입니다|이고|이었어)?(?=\s|$)/g,' ')
+   .replace(/(?:^|\s)(?:오전|오후)(?:이야|이에요|예요)?(?=\s|$)/g,' ')
+   .replace(/\s*(?:있어|있어요|있습니다|있다|있는데|예정이야|예정이에요|예정입니다)\s*$/,' ')
+   .replace(/(수업|회의|약속|예약|운동|진료|모임|방문|점검|상담|검사|검진|면접|식사|미팅|라운딩|교육|강의|행사)(이|가)(?=\s|$)/,'$1')
+   .replace(/\s+/g,' ').trim();
+ // Bare 1~12 o'clock does not establish AM or PM. Keep the literal hour
+ // and flag it for confirmation rather than silently guessing.
+ if(timeFound && /^(?:0[1-9]|1[0-2]):/.test(time) &&
+    !/(오전|오후|아침|점심|저녁|밤|새벽)\s*(?:\d{1,2}|열두|열한|아홉|여덟|일곱|여섯|다섯|넷|네|셋|세|둘|두|하나|한|열)\s*(?:시|:)/.test(original) &&
+    !/(?:1[3-9]|2[0-3])\s*(?:시|:)/.test(original)) ambiguous.push('오전/오후를 확인해 주세요');
  const title=text||original;
  return {title,date,time:time||'10:00',place,dateFound,timeFound,needsReview:ambiguous.length>0,reviewReasons:[...new Set(ambiguous)],original};
 }
