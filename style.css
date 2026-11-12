@@ -555,3 +555,13 @@ main{padding:8px 14px 12px!important}
 .app .panel h2{font-weight:700}
 .app .item{font-weight:500}
 .app .actions button,.app .save{font-weight:700}
+
+/* Haru 1.5: keep the existing voice-choice dialog; allow in-place transcript correction. */
+#voiceChoiceDialog .voice-edit-label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px;color:#566653}
+#voiceChoiceDialog .voice-edit-input{box-sizing:border-box;width:100%;min-height:94px;padding:12px;border:1px solid #c6cbbf;border-radius:12px;background:#fffdf7;color:#27352b;font:inherit;line-height:1.55;resize:vertical}
+#voiceChoiceDialog .voice-edit-actions{display:flex;align-items:center;gap:12px;justify-content:space-between;margin:8px 0 12px;font-size:12px;color:#786f60}
+#voiceRestoreText{border:1px solid #c7c8bc;background:#f9f6ed;color:#4d5d4b;border-radius:9px;padding:7px 10px;white-space:nowrap}
+#voiceReviewHint{flex:1;text-align:right}
+#voicePreview{background:#f5f5ed;border-radius:12px;padding:12px;margin-bottom:12px}
+#voicePreview>div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:13px}
+#voicePreview span{color:#777e73;min-width:32px}#voicePreview strong{text-align:right;overflow-wrap:anywhere}
