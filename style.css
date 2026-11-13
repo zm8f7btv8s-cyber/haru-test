@@ -624,3 +624,63 @@ main{padding:0 17px 12px!important;background:transparent!important}
 dialog{background:#fcfcfd!important;color:#27364a!important}dialog::backdrop{background:#1d2c41a3!important}
 @media(max-height:800px){.hero{height:220px!important;min-height:220px!important;flex-basis:220px!important}.hero .hero-copy{top:90px!important}.hero-copy h2{font-size:25px!important}#home .assistant-panel{padding:14px 15px!important}#home .assistant-heading{margin-bottom:9px!important}#home .composer{min-height:83px!important}#home .composer textarea{min-height:62px!important}}
 @media(max-width:370px){.hero .datebox{right:8px!important}.hero .new-brand{left:16px}.hero .hero-copy{left:17px}#home .assistant-heading strong{font-size:19px!important}}
+
+
+/* HARU 2.0 · Unified winter-light design. Legacy layout overridden without touching app logic. */
+:root{--ink:#293b53;--muted:#7c8b9f;--line:#e1e6ed;--blue:#405b7c;--blue-soft:#e9eef5;--rose:#b77e80;--rose-soft:#f5e9e8;--paper:#fffefd;--bg:#f3f5f8;--shadow:0 8px 28px #334b6710}
+#home .actions button,#home .actions button+button{background:#e8eef6!important;color:#3d597a!important;border:1px solid #d9e2ed!important}
+#home .actions button+button{background:#f5e9e8!important;color:#a56e75!important;border-color:#eddbdc!important}
+#home .actions button:disabled{opacity:.5}
+#calendar.page,#all.page,#settings.page,#today-events.page{background:transparent!important;color:var(--ink)!important;padding:22px 2px 14px!important}
+.page-lead,.all-top{margin:0 4px 20px!important;text-align:left!important;padding:0!important;background:transparent!important;border:0!important}
+.page-lead h2,.all-top h2{font-size:27px!important;letter-spacing:-1px!important;color:var(--ink)!important;margin:5px 0 5px!important;font-weight:750!important}
+.page-lead p,.all-top p{font-size:13px!important;color:var(--muted)!important;margin:0!important}
+#calendar .section-head{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:20px!important;padding:10px 12px!important;box-shadow:var(--shadow)!important;min-height:65px!important;margin:0 0 14px!important}
+#calendar .section-head h2{font-size:19px!important;color:var(--ink)!important;font-weight:750!important}
+#calendar .section-head button,#detailCalPrev,#detailCalNext{background:var(--blue-soft)!important;color:var(--blue)!important;border:0!important;border-radius:12px!important;box-shadow:none!important}
+#calendar .weekdays{color:var(--muted)!important;margin-bottom:8px!important}
+#calendar .calendar-scroll-host{border:0!important;background:transparent!important}
+#calendar .calendar-grid{gap:5px!important;background:transparent!important}
+#calendar .calendar-grid>*,#calendar .calendar-grid button{border:1px solid #e1e5ec!important;background:#fffefd!important;border-radius:12px!important;box-shadow:none!important;color:var(--ink)!important}
+#calendar .calendar-grid .selected,#calendar .calendar-grid .today{background:#e9eef6!important;border-color:#94a7be!important}
+#calendar .calendar-grid .event-dot,#calendar .calendar-grid .event-title{color:var(--blue)!important}
+#calendar #selectedLabel{color:var(--ink)!important;font-size:16px!important;margin:13px 4px 8px!important}
+#calendar #selectedEvents{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:17px!important;padding:8px!important}
+#calendar .wide.add-event,#all .all-action-bar .add-event,#detailAddEvent{background:var(--blue)!important;color:#fff!important;border:0!important;border-radius:14px!important}
+#all .filter{background:transparent!important;gap:9px!important;margin-bottom:16px!important}
+#all .filter-btn{background:#fff!important;color:#687a91!important;border:1px solid var(--line)!important;border-radius:13px!important;box-shadow:none!important;font-weight:650!important}
+#all .filter-btn.selected{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important}
+#all .all-scroll{background:transparent!important;padding:0 3px!important}
+#all #allItems>*,#all .all-group,#all .all-date-group{border-radius:19px!important;overflow:hidden!important;box-shadow:var(--shadow)!important;border-color:var(--line)!important;background:var(--paper)!important;margin-bottom:12px!important}
+#all #allItems h3,#all .group-title,#all .all-group-header{background:#e9eef5!important;color:var(--ink)!important;border:0!important}
+#all #allItems .item,#all #allItems .all-item{background:#fffefd!important;color:var(--ink)!important;border-color:#e9edf2!important}
+#all .all-action-bar{background:transparent!important;gap:10px!important}
+#all .all-action-bar button{border-radius:14px!important;border:0!important;background:var(--blue)!important;color:white!important}
+#all .all-action-bar .add-task,#detailAddTask{background:#ad7e87!important;color:#fff!important}
+#settings>.panel{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:22px!important;box-shadow:var(--shadow)!important;padding:19px!important}
+#settings h3{color:var(--ink)!important}#settings p,#settings .small{color:var(--muted)!important}
+#settings .ai-settings{background:#f0f3f8!important;border:1px solid var(--line)!important;border-radius:17px!important}
+#settings input,#settings select{accent-color:var(--blue)!important}
+#settings button.wide,#settings #export,#settings #importButton,#settings #aiSaveSettings{background:var(--blue)!important;color:white!important;border-radius:14px!important;border:0!important}
+#today-events .detail-shell{background:transparent!important;color:var(--ink)!important}
+#today-events .detail-shell>h2{font-size:26px!important;color:var(--ink)!important;margin:5px 0 16px!important}
+#today-events .premium-date-card,#today-events .detail-list-scroll{background:var(--paper)!important;border:1px solid var(--line)!important;border-radius:20px!important;box-shadow:var(--shadow)!important}
+#today-events .detail-tabs button.active{background:var(--blue)!important;color:white!important}
+#today-events .detail-section-heading{color:var(--ink)!important}
+/* Forms and overlays: one visual language for all screens. */
+dialog{background:var(--paper)!important;color:var(--ink)!important;border:1px solid #e6e8ef!important;border-radius:25px!important;box-shadow:0 24px 70px #162d4660!important}
+dialog .dialoghead h2,dialog h2{color:var(--ink)!important}
+dialog label{color:var(--ink)!important}
+dialog input,dialog textarea,dialog select{border-color:#dce3eb!important;border-radius:13px!important;color:var(--ink)!important;background:#fff!important}
+dialog input[type=date],dialog input[type=time]{background:#edf1f7!important;color:var(--blue)!important}
+dialog button[type=submit],dialog .save,dialog .wide{background:var(--blue)!important;color:white!important;border:0!important;border-radius:14px!important}
+dialog .close{color:#778497!important}
+dialog input[type=checkbox]{accent-color:var(--blue)!important}
+.nav button[data-page=settings] i,.nav button[data-page=all] i{color:inherit!important}
+/* Remove legacy sage/olive/coral accent leaks in common lists. */
+#home .home-events-card,#home .home-tasks-card,#home .home-upcoming-card{background:#fff!important}
+#home .home-events-card h2,#home .home-tasks-card h2,#home .home-upcoming-card h2{color:var(--ink)!important}
+#home .home-events-card .go,#home .home-tasks-card .go{background:var(--blue-soft)!important;color:var(--blue)!important}
+#home .home-tasks-card .home-count{background:var(--rose-soft)!important;color:var(--rose)!important}
+#home .home-upcoming-card .home-count{background:#f5edf0!important;color:#a67d87!important}
+@media(max-width:390px){#calendar.page,#all.page,#settings.page{padding-top:17px!important}.page-lead h2,.all-top h2{font-size:24px!important}}
